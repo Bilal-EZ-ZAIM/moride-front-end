@@ -1,5 +1,5 @@
-import React from 'react';
-import { Car } from 'lucide-react';
+import React from "react";
+import { Car } from "lucide-react";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -10,7 +10,6 @@ interface AuthLayoutProps {
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <img
           src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?auto=format&fit=crop&q=80"
@@ -24,13 +23,13 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
               <h1 className="text-4xl font-bold text-white">MoRide</h1>
             </div>
             <p className="text-xl text-emerald-100">
-              Découvrez une nouvelle façon de voyager au Maroc. Sécurité, confort et innovation pour tous vos déplacements.
+              Découvrez une nouvelle façon de voyager au Maroc. Sécurité,
+              confort et innovation pour tous vos déplacements.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Right side - Auth form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">

@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import { Home } from "./pages/Home";
-import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { DriverProfile } from "./pages/DriverProfile";
 import { DriversListing } from "./pages/DriversListing";
@@ -17,6 +16,7 @@ import { AdminUsers } from "./pages/AdminUsers";
 import { ChangePassword } from "./pages/ChangePassword";
 import { ResetPassword } from "./pages/ResetPassword";
 import { Payment } from "./pages/Payment";
+import Login from "./pages/Login";
 
 export function App() {
   return (
