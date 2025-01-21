@@ -1,24 +1,57 @@
-import React from 'react';
-import { Button } from '../common/Button';
+import React from "react";
+import { Button } from "../common/Button";
+import { useAppDispatch } from "../../hooks";
+import { useNavigate } from "react-router-dom";
 
 export function SocialAuth() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const loginByGoogleFront = () => {
+    const googleLoginUrl = "http://localhost:3000/api/v1/auth/google/login";
+
+    // تغيير المكان الذي يفتح فيه الرابط ليتم فتحه في نفس الصفحة
+    window.location.href = googleLoginUrl;
+
+    // إضافة مستمع للرسائل في حال تم إرجاع التوكن من الخادم بعد إعادة التوجيه
+    window.addEventListener("message", (event) => {
+      if (event.origin !== "http://localhost:3000") return;
+
+      const { token } = event.data;
+      console.log("Received token from server:", token);
+
+      if (token) {
+        dispatch({ type: "auth/setToken", payload: token });
+        navigate("/dashboard");
+      }
+    });
+  };
+
   return (
     <div className="space-y-4">
       <Button
         variant="outline"
         className="w-full flex items-center justify-center gap-2"
-        onClick={() => console.log('Google login')}
+        onClick={loginByGoogleFront}
       >
-        <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
+        <img
+          src="https://www.google.com/favicon.ico"
+          alt="Google"
+          className="w-5 h-5"
+        />
         Continuer avec Google
       </Button>
 
       <Button
         variant="outline"
         className="w-full flex items-center justify-center gap-2"
-        onClick={() => console.log('Facebook login')}
+        onClick={() => console.log("Facebook login")}
       >
-        <img src="https://www.facebook.com/favicon.ico" alt="Facebook" className="w-5 h-5" />
+        <img
+          src="https://www.facebook.com/favicon.ico"
+          alt="Facebook"
+          className="w-5 h-5"
+        />
         Continuer avec Facebook
       </Button>
 

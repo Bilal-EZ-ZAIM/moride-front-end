@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosResponse } from "axios";
 import { LoginIntrface } from "../../../interface/loginInterface";
 import { RegisterIntrface } from "../../../interface/registerInterface";
-const api: string = "http://localhost:3000";
+const api: string = "http://localhost:3000/api/v1/auth/";
 
 // const api: string = "https://sportfy.onrender.com";
 
@@ -19,6 +19,8 @@ interface AuthState {
   errorLogin: string | null;
   errorRegister: string | null;
   message: string | null;
+  msgErrUpPwd: string | null;
+  step: string | null;
 }
 
 // Initial state
@@ -34,6 +36,8 @@ const initialState: AuthState = {
   message: null,
   errorLogin: null,
   errorRegister: null,
+  msgErrUpPwd: null,
+  step: "email",
 };
 
 // Create async thunk for registering a user
@@ -46,15 +50,11 @@ export const registers = createAsyncThunk(
     console.log("===========");
 
     try {
-      const res: AxiosResponse = await axios.post(
-        api + "/api/v1/auth/register",
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res: AxiosResponse = await axios.post(api + "register", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       console.log("Response from API:", res.data);
 
@@ -76,15 +76,11 @@ export const login = createAsyncThunk(
     console.log(api);
 
     try {
-      const res: AxiosResponse = await axios.post(
-        `${api}/api/v1/auth/login`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res: AxiosResponse = await axios.post(`${api}login`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       console.log("Response from API:", res.data);
 
@@ -136,19 +132,13 @@ export const verifyOtp = createAsyncThunk(
 
 export const forgetPassword = createAsyncThunk(
   "auth/forgetPassword",
-  async (data, thunkAPI) => {
+  async (data: any, thunkAPI) => {
     try {
-      const res = await axios.post(
-        `http://localhost:8001/api/auth//forgetpassword`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("Response from API:", res);
+      const res = await axios.post(`${api}send`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       return res.data;
     } catch (error: any) {
@@ -162,29 +152,36 @@ export const forgetPassword = createAsyncThunk(
   }
 );
 
-export const UpdatePassword = createAsyncThunk(
-  "auth/UpdatePassword",
-  async (data, thunkAPI: any) => {
-    console.log(data);
+export const updatePassword = createAsyncThunk(
+  "auth/updatePassword",
+  async (data: any, thunkAPI: any) => {
+    const updatePass = {
+      password: data.currentPassword,
+      newpassword: data.newPassword,
+    };
 
-    const state = thunkAPI.getState().auth;
+    const token = localStorage.getItem("token");
 
     try {
-      const res = await axios.post(
-        `http://localhost:8001/api/auth/resetpassword/${state.token}`,
-        data,
+      const res = await axios.put(
+        "http://localhost:3000/api/v1/auth/restPassword",
+        updatePass,
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-
+      console.log("Response:", res.data);
       return res.data;
     } catch (error: any) {
-      console.error(error.response?.data || error.message);
-
-      return thunkAPI.rejectWithValue(error);
+      console.error("Error message:", error.message);
+      console.error("Error details:", error.response?.data);
+      return thunkAPI.rejectWithValue({
+        message: error.message,
+        response: error.response?.data,
+      });
     }
   }
 );
@@ -213,9 +210,9 @@ export const Deconxion = createAsyncThunk(
 
 export const isLogins = createAsyncThunk(
   "auth/isLogins",
-  async (token: string, thunkAPI: any) => {
+  async (token: string | null, thunkAPI: any) => {
     try {
-      const res = await axios.get(`${api}/api/v1/auth/islogin/`, {
+      const res = await axios.get(`${api}islogin/`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -236,6 +233,30 @@ export const isLogins = createAsyncThunk(
   }
 );
 
+export const loginByGoogle = createAsyncThunk(
+  "auth/loginByGoogle",
+  async (_, thunkAPI: any) => {
+    try {
+      const res = await axios.get(`${api}google/login/`, {
+        headers: {
+          withCredentials: true,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response from API:", res.data);
+
+      return res.data;
+    } catch (error: any) {
+      console.error(
+        "Error while verifying login:",
+        error.response?.data || error.message
+      );
+
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 // Create the slice
 const authSlice = createSlice({
   name: "auth",
@@ -326,13 +347,13 @@ const authSlice = createSlice({
       .addCase(forgetPassword.pending, (state) => {
         state.isLoading = true;
         state.status = false;
-        state.error = null;
       })
       .addCase(forgetPassword.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.user = action.payload;
         console.log("User Action", action);
         state.token = action.payload.token;
+        state.step = "code";
         state.error = null;
         state.status = true;
       })
@@ -340,32 +361,32 @@ const authSlice = createSlice({
         state.status = false;
         state.isLoading = false;
         console.log(action.payload.response.data.message);
+        state.msgErrUpPwd = action.payload.response.data.message;
 
         state.messageForgetPassword = action.payload.response.data.message;
       });
 
     // UpdatePassword
     builder
-      .addCase(UpdatePassword.pending, (state) => {
+      .addCase(updatePassword.pending, (state) => {
         state.isLoading = true;
         state.error = null;
         state.status = false;
       })
-      .addCase(UpdatePassword.fulfilled, (state, action: any) => {
+      .addCase(updatePassword.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.user = action.payload;
         state.token = action.payload.token;
         state.error = null;
         state.status = true;
-        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("token", action.payload);
       })
-      .addCase(UpdatePassword.rejected, (state, action: any) => {
+      .addCase(updatePassword.rejected, (state, action: any) => {
         state.status = false;
 
         state.isLoading = false;
-        console.log(action.payload.response.data.message);
-
-        state.error = action.payload.response.data.message;
+        console.log(action.payload);
+        state.msgErrUpPwd = action.payload.response.message;
       });
 
     // log out
@@ -406,6 +427,24 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(isLogins.rejected, (state, action: any) => {
+        state.isLoading = false;
+        console.log(action.payload.response);
+
+        state.error = action.payload.response.data.message;
+      });
+
+    builder
+      .addCase(loginByGoogle.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(loginByGoogle.fulfilled, (state, action: any) => {
+        state.isLoading = false;
+        state.user = action.payload;
+        state.error = null;
+        state.isLogin = true;
+        state.error = null;
+      })
+      .addCase(loginByGoogle.rejected, (state, action: any) => {
         state.isLoading = false;
         console.log(action.payload.response);
 

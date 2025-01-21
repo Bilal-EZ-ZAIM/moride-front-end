@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import { Home } from "./pages/Home";
@@ -17,6 +16,7 @@ import { ChangePassword } from "./pages/ChangePassword";
 import { ResetPassword } from "./pages/ResetPassword";
 import { Payment } from "./pages/Payment";
 import Login from "./pages/Login";
+import WelcomePage from "./pages/WelcomePage";
 
 export function App() {
   return (
@@ -34,6 +34,7 @@ export function App() {
           <Route path="/messages" element={<Messages />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/welcome/page" element={<WelcomePage/>} />
         </Route>
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/admin" element={<SuperAdminDashboard />} />

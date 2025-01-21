@@ -6,13 +6,14 @@ import { SocialAuth } from "../components/auth/SocialAuth";
 import { Button } from "../components/common/Button";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { LoginIntrface } from "../interface/loginInterface";
-import { login } from "../store/features/auth/authSlice";
+import { login, loginByGoogle } from "../store/features/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const { isLoading, errorLogin } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -33,12 +34,13 @@ const Login: React.FC = () => {
       alert("An unexpected error occurred. Please try again later.");
     }
   };
+  
   return (
     <AuthLayout
       title="Connexion"
       subtitle="Bienvenue ! Connectez-vous pour continuer"
     >
-      <SocialAuth />
+      <SocialAuth  />
 
       {errorLogin && (
         <div className="relative bg-red-50 border border-red-300 text-red-700 text-xs p-2 rounded-xl mb-4 shadow-md transition-opacity duration-300 ease-in-out">
@@ -150,12 +152,12 @@ const Login: React.FC = () => {
             </label>
           </div>
 
-          <a
-            href="#"
+          <Link
+            to="/reset-password"
             className="text-sm font-medium text-emerald-600 hover:text-emerald-500"
           >
             Mot de passe oublié ?
-          </a>
+          </Link>
         </div>
 
         <Button type="submit" className="w-full" disabled={isLoading}>
