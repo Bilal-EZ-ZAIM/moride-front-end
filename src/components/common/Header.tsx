@@ -18,8 +18,8 @@ export function Header() {
   };
 
   return (
-    <header className="fixed w-full bg-white/95 backdrop-blur-sm z-50 shadow-sm">
-      <nav className="container mx-auto px-4 py-4">
+    <header className="w-full sticky top-0 bg-white/95 backdrop-blur-sm z-50 shadow-sm">
+      <nav className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <Car className="h-8 w-8 text-emerald-600" />
@@ -27,9 +27,9 @@ export function Header() {
           </Link>
           
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#services" className="text-gray-600 hover:text-emerald-600 transition-colors">Services</a>
-            <a href="#safety" className="text-gray-600 hover:text-emerald-600 transition-colors">Sécurité</a>
-            <a href="#drivers" className="text-gray-600 hover:text-emerald-600 transition-colors">Chauffeurs</a>
+            <Link to="#services" className="text-gray-600 hover:text-emerald-600 transition-colors">Services</Link>
+            <Link to="#safety" className="text-gray-600 hover:text-emerald-600 transition-colors">Sécurité</Link>
+            <Link to="drivers" className="text-gray-600 hover:text-emerald-600 transition-colors">Chauffeurs</Link>
             
             <div className="flex items-center gap-6">
               <Link to="/messages" className="relative">

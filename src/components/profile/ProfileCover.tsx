@@ -8,7 +8,7 @@ interface ProfileCoverProps {
 
 export function ProfileCover({ onEdit }: ProfileCoverProps) {
   return (
-    <div className="relative h-[400px]">
+    <div className="relative h-[250px]">
       <div className="absolute inset-0">
         <img
           src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80"
