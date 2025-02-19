@@ -69,7 +69,7 @@ const Login: React.FC = () => {
         </div>
       )}
 
-      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+      <form className="space-y-6"  data-cy="form-login" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label
             htmlFor="email"
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
             </div>
             <input
               id="email"
-              type="email"
+              type="text"
               {...register("email", {
                 required: "L’email est requis",
                 pattern: {
@@ -165,7 +165,7 @@ const Login: React.FC = () => {
         </Button>
 
         <p className="text-center text-sm text-gray-600">
-          Pas encore de compte ?{" "}
+          Pas encore de compte ?
           <Link
             to="/register"
             className="font-medium text-emerald-600 hover:text-emerald-500"

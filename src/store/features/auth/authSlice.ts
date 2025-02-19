@@ -3,9 +3,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosResponse } from "axios";
 import { LoginIntrface } from "../../../interface/loginInterface";
 import { RegisterIntrface } from "../../../interface/registerInterface";
-const api: string = "http://localhost:3000/api/v1/auth/";
+// const api: string = "https://backend-moride-git-main-bilanox1s-projects.vercel.app/api/v1/auth/";
 
-// const api: string = "https://sportfy.onrender.com";
+const api: string = "http://localhost:3000/api/v1/auth/";
 
 interface AuthState {
   isLoading: boolean;
@@ -210,7 +210,8 @@ export const Deconxion = createAsyncThunk(
 
 export const isLogins = createAsyncThunk(
   "auth/isLogins",
-  async (token: string | null, thunkAPI: any) => {
+  async (_, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.get(`${api}islogin/`, {
         headers: {

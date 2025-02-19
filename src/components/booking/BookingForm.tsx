@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
-import { MapPin, Users, Calendar, Clock, Info } from 'lucide-react';
-import { Button } from '../common/Button';
+import React, { useState } from "react";
+import { MapPin, Users, Calendar, Clock, Info } from "lucide-react";
+import { Button } from "../common/Button";
 
-type TripType = 'private' | 'shared' | 'premium';
+type TripType = "private" | "shared" | "premium";
 
 export function BookingForm() {
-  const [tripType, setTripType] = useState<TripType>('private');
+  const [tripType, setTripType] = useState<TripType>("private");
   const [formData, setFormData] = useState({
-    from: '',
-    to: '',
-    date: '',
-    time: '',
+    from: "",
+    to: "",
+    date: "",
+    time: "",
     passengers: 1,
-    notes: ''
+    notes: "",
+    priceFrom: "", // المبلغ من
+    priceTo: "", // المبلغ إلى
   });
+
+  const handlePriceFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, priceFrom: e.target.value });
+  };
+
+  const handlePriceToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, priceTo: e.target.value });
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
@@ -24,27 +34,33 @@ export function BookingForm() {
         <div className="grid grid-cols-3 gap-4">
           <button
             className={`p-4 rounded-lg border-2 text-center ${
-              tripType === 'private' ? 'border-emerald-600 bg-emerald-50' : 'border-gray-200'
+              tripType === "private"
+                ? "border-emerald-600 bg-emerald-50"
+                : "border-gray-200"
             }`}
-            onClick={() => setTripType('private')}
+            onClick={() => setTripType("private")}
           >
             <h3 className="font-semibold mb-1">Privé</h3>
             <p className="text-sm text-gray-600">Voiture individuelle</p>
           </button>
           <button
             className={`p-4 rounded-lg border-2 text-center ${
-              tripType === 'shared' ? 'border-emerald-600 bg-emerald-50' : 'border-gray-200'
+              tripType === "shared"
+                ? "border-emerald-600 bg-emerald-50"
+                : "border-gray-200"
             }`}
-            onClick={() => setTripType('shared')}
+            onClick={() => setTripType("shared")}
           >
             <h3 className="font-semibold mb-1">Partagé</h3>
             <p className="text-sm text-gray-600">Prix réduit</p>
           </button>
           <button
             className={`p-4 rounded-lg border-2 text-center ${
-              tripType === 'premium' ? 'border-emerald-600 bg-emerald-50' : 'border-gray-200'
+              tripType === "premium"
+                ? "border-emerald-600 bg-emerald-50"
+                : "border-gray-200"
             }`}
-            onClick={() => setTripType('premium')}
+            onClick={() => setTripType("premium")}
           >
             <h3 className="font-semibold mb-1">Premium</h3>
             <p className="text-sm text-gray-600">Service luxe</p>
@@ -62,7 +78,9 @@ export function BookingForm() {
               <input
                 type="text"
                 value={formData.from}
-                onChange={(e) => setFormData({ ...formData, from: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, from: e.target.value })
+                }
                 className="w-full pl-10 pr-4 py-2 border rounded-lg"
                 placeholder="Adresse de départ"
               />
@@ -77,7 +95,9 @@ export function BookingForm() {
               <input
                 type="text"
                 value={formData.to}
-                onChange={(e) => setFormData({ ...formData, to: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, to: e.target.value })
+                }
                 className="w-full pl-10 pr-4 py-2 border rounded-lg"
                 placeholder="Adresse de destination"
               />
@@ -96,7 +116,9 @@ export function BookingForm() {
               <input
                 type="date"
                 value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, date: e.target.value })
+                }
                 className="w-full pl-10 pr-4 py-2 border rounded-lg"
               />
             </div>
@@ -110,7 +132,9 @@ export function BookingForm() {
               <input
                 type="time"
                 value={formData.time}
-                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, time: e.target.value })
+                }
                 className="w-full pl-10 pr-4 py-2 border rounded-lg"
               />
             </div>
@@ -129,9 +153,39 @@ export function BookingForm() {
               min="1"
               max="4"
               value={formData.passengers}
-              onChange={(e) => setFormData({ ...formData, passengers: parseInt(e.target.value) })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  passengers: parseInt(e.target.value),
+                })
+              }
               className="w-full pl-10 pr-4 py-2 border rounded-lg"
             />
+          </div>
+        </div>
+
+        {/* Prix */}
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Prix de la course
+            </label>
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="number"
+                value={formData.priceFrom}
+                onChange={handlePriceFromChange}
+                className="w-full py-2 border rounded-lg pl-2"
+                placeholder="Prix minimum"
+              />
+              <input
+                type="number"
+                value={formData.priceTo}
+                onChange={handlePriceToChange}
+                className="w-full py-2 border rounded-lg pl-2"
+                placeholder="Prix maximum"
+              />
+            </div>
           </div>
         </div>
 
@@ -144,7 +198,9 @@ export function BookingForm() {
             <Info className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
             <textarea
               value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, notes: e.target.value })
+              }
               className="w-full pl-10 pr-4 py-2 border rounded-lg"
               rows={3}
               placeholder="Instructions spéciales, bagages, etc."

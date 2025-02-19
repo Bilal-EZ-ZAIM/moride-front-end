@@ -1,8 +1,12 @@
-import React from 'react';
-import { Star, Clock, Car } from 'lucide-react';
+import React, { useState } from 'react';
+import { Star, Clock, MessageCircle } from 'lucide-react';
 import { Button } from '../common/Button';
 
 export function DriverApplications() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [priceInput, setPriceInput] = useState('');
+  const [selectedOffer, setSelectedOffer] = useState(null);
+
   const applications = [
     {
       id: 1,
@@ -13,7 +17,7 @@ export function DriverApplications() {
         reviews: 245
       },
       price: 450,
-      vehicle: "Mercedes-Benz Classe E",
+      message: "Je serai disponible à 14h00 pour vous offrir un service rapide et professionnel.",
       proposedTime: "14:00",
       status: "pending"
     },
@@ -26,11 +30,28 @@ export function DriverApplications() {
         reviews: 189
       },
       price: 420,
-      vehicle: "BMW Série 5",
+      message: "Je vous propose une prise en charge à 14h15, prêt à partir dès que vous êtes prêts.",
       proposedTime: "14:15",
       status: "pending"
     }
   ];
+
+  // Function to open the modal
+  const openModal = (offer) => {
+    setSelectedOffer(offer);
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setPriceInput('');
+  };
+
+  // Function to handle price input change
+  const handlePriceChange = (event) => {
+    setPriceInput(event.target.value);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
@@ -62,23 +83,70 @@ export function DriverApplications() {
                 </div>
               </div>
             </div>
-            
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-              <Car className="w-4 h-4" />
-              {app.vehicle}
+
+            {/* Displaying the full message with the MessageCircle icon */}
+            <div className="flex items-start gap-2 text-sm text-gray-600 mb-4">
+              <MessageCircle className="w-4 h-4 text-gray-600" />
+              <p>{app.message}</p>
             </div>
 
             <div className="flex gap-3">
               <Button variant="outline" size="sm" className="flex-1">
                 Contacter
               </Button>
-              <Button size="sm" className="flex-1">
+              <Button
+                size="sm"
+                className="flex-1"
+                onClick={() => openModal(app)} // Open modal with selected offer
+              >
                 Accepter l'offre
               </Button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-md p-6 w-80">
+            <h3 className="text-xl font-semibold mb-4">Entrez le prix</h3>
+            <div className="mb-4">
+              <label htmlFor="price" className="block text-sm text-gray-600 mb-2">
+                Prix proposé
+              </label>
+              <input
+                id="price"
+                type="number"
+                value={priceInput}
+                onChange={handlePriceChange}
+                className="w-full px-3 py-2 border rounded-lg"
+                placeholder="Entrez le prix"
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1"
+                onClick={closeModal} // Close modal without saving
+              >
+                Annuler
+              </Button>
+              <Button
+                size="sm"
+                className="flex-1"
+                onClick={() => {
+                  alert(`Prix proposé: ${priceInput} MAD`); // Handle submitted price
+                  closeModal();
+                }}
+              >
+                Confirmer
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

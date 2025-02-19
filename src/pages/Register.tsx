@@ -105,7 +105,6 @@ export function Register() {
             </div>
             <input
               id="email"
-              type="email"
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500"
               placeholder="exemple@email.com"
               {...register("email", {
@@ -180,41 +179,23 @@ export function Register() {
             />
           </div>
           {errors.confirmPassword && (
-            <p className="text-red-500 text-xs mt-1">
+            <p
+              data-cy="error-confirm-password"
+              className="text-red-500 text-xs mt-1"
+            >
               {errors.confirmPassword.message}
             </p>
           )}
         </div>
 
-        {/* <div className="flex items-center">
-          <input
-            id="terms"
-            type="checkbox"
-            className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
-            {...register("terms", {
-              required: "Vous devez accepter les conditions",
-            })}
-          />
-          <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-            J'accepte les{" "}
-            <a
-              href="#"
-              className="font-medium text-emerald-600 hover:text-emerald-500"
-            >
-              conditions d'utilisation
-            </a>
-          </label>
-          {errors.terms && (
-            <p className="text-red-500 text-xs mt-1">{errors.terms.message}</p>
-          )}
-        </div> */}
+    
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Chargement..." : "Créer un compte"}
         </Button>
 
         <p className="text-center text-sm text-gray-600">
-          Déjà inscrit ?{" "}
+          Déjà inscrit ?
           <Link
             to="/login"
             className="font-medium text-emerald-600 hover:text-emerald-500"

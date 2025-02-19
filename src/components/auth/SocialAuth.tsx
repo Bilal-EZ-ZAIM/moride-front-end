@@ -8,7 +8,7 @@ export function SocialAuth() {
   const navigate = useNavigate();
 
   const loginByGoogleFront = () => {
-    const googleLoginUrl = "http://localhost:3000/api/v1/auth/google/login";
+    const googleLoginUrl = "https://backend-moride-git-main-bilanox1s-projects.vercel.app/api/v1/auth/google/login";
 
     // تغيير المكان الذي يفتح فيه الرابط ليتم فتحه في نفس الصفحة
     window.location.href = googleLoginUrl;

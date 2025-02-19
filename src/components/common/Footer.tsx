@@ -1,5 +1,5 @@
-import React from 'react';
-import { Car, Facebook, Twitter, Instagram, Mail, Phone } from 'lucide-react';
+import React from "react";
+import { Car, Facebook, Twitter, Instagram, Mail, Phone } from "lucide-react";
 
 export function Footer() {
   return (
@@ -9,20 +9,51 @@ export function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-6">
               <Car className="h-8 w-8 text-emerald-400" />
-              <span className="text-2xl font-bold">MoRide</span>
+              <span data-cy="submit-span"  className="text-2xl font-bold" >
+                MoRide
+              </span>
             </div>
             <p className="text-gray-400">
-              Votre service de transport de confiance au Maroc. Sûr, fiable et abordable.
+              Votre service de transport de confiance au Maroc. Sûr, fiable et
+              abordable.
             </p>
           </div>
 
           <div>
             <h3 className="text-lg font-bold mb-4">Liens Rapides</h3>
             <ul className="space-y-2">
-              <li><a href="#services" className="text-gray-400 hover:text-emerald-400">Services</a></li>
-              <li><a href="#safety" className="text-gray-400 hover:text-emerald-400">Sécurité</a></li>
-              <li><a href="#drivers" className="text-gray-400 hover:text-emerald-400">Devenir Chauffeur</a></li>
-              <li><a href="#about" className="text-gray-400 hover:text-emerald-400">À Propos</a></li>
+              <li>
+                <a
+                  href="#services"
+                  className="text-gray-400 hover:text-emerald-400"
+                >
+                  Services
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#safety"
+                  className="text-gray-400 hover:text-emerald-400"
+                >
+                  Sécurité
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#drivers"
+                  className="text-gray-400 hover:text-emerald-400"
+                >
+                  Devenir Chauffeur
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#about"
+                  className="text-gray-400 hover:text-emerald-400"
+                >
+                  À Propos
+                </a>
+              </li>
             </ul>
           </div>
 

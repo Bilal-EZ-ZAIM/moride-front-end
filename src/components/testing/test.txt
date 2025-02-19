@@ -1,0 +1,245 @@
+### دليل شامل لاختبار React باستخدام Cypress
+
+Cypress هو أداة اختبار قوية يمكن استخدامها لاختبار تطبيقات React بسهولة وفعالية. هذا الملف يشرح كيفية استخدام Cypress خطوة بخطوة مع أمثلة واضحة لتسهيل فهم المبتدئين.
+
+---
+
+#### **1. تثبيت Cypress**
+
+قبل البدء باستخدام Cypress، تأكد من تثبيته في مشروعك عبر تنفيذ الأمر التالي:
+
+```bash
+npm install cypress --save-dev
+```
+
+ثم افتح Cypress لأول مرة باستخدام:
+
+```bash
+npx cypress open
+```
+
+هذا سيفتح واجهة Cypress حيث يمكنك تشغيل الاختبارات بسهولة.
+
+---
+
+#### **2. إعداد المشروع**
+
+تأكد من أن لديك مشروع React جاهز. أضف Cypress إلى سكربتات `package.json`:
+
+```json
+"scripts": {
+  "cypress": "cypress open"
+}
+```
+
+ثم قم بإنشاء المجلد `cypress` الذي يحتوي على ملفات الاختبار داخل مشروعك.
+
+---
+
+#### **3. كتابة الاختبارات**
+
+##### **3.1. التحقق من الأحداث (Events)**
+
+يمكنك اختبار الأحداث مثل النقر (click)، الكتابة (type)، والإرسال (submit).
+
+###### **مثال على اختبار حدث Click:**
+
+لنفترض أن لديك زرًا يزيد العداد عند النقر:
+
+```jsx
+function App() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Click Me</button>
+      <p>Count: {count}</p>
+    </div>
+  );
+}
+```
+
+### كيفية كتابة اختبار النقر:
+
+```javascript
+// cypress/integration/event_test_spec.js
+describe('اختبار حدث النقر', () => {
+  it('يزيد العداد عند النقر على الزر', () => {
+    cy.visit('http://localhost:3000'); // تأكد من تشغيل التطبيق
+    cy.get('button').click(); // محاكاة النقر على الزر
+    cy.get('p').should('contain', 'Count: 1'); // التحقق من النص
+  });
+});
+```
+
+##### **3.2. إدخال البيانات (Typing Data)**
+
+لاختبار إدخال البيانات في حقل نصي أو نموذج:
+
+###### **مثال:**
+
+```jsx
+function LoginForm() {
+  const [email, setEmail] = React.useState('');
+
+  return (
+    <form>
+      <input
+        type="email"
+        placeholder="Enter email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+### كيفية كتابة اختبار إدخال البيانات:
+
+```javascript
+// cypress/integration/form_test_spec.js
+describe('اختبار إدخال البيانات', () => {
+  it('يدخل بريدًا إلكترونيًا في الحقل', () => {
+    cy.visit('http://localhost:3000');
+    cy.get('input[type="email"]')
+      .type('test@example.com') // إدخال النص
+      .should('have.value', 'test@example.com'); // التحقق من القيمة
+  });
+});
+```
+
+##### **3.3. التحقق من الصفوف (Classes)**
+
+يمكنك التحقق مما إذا كان عنصر HTML يحتوي على صف معين باستخدام `.should('have.class')`.
+
+###### **مثال:**
+
+```jsx
+function Alert({ message, type }) {
+  return <div className={`alert ${type}`}>{message}</div>;
+}
+```
+
+### كيفية كتابة اختبار للصفوف:
+
+```javascript
+// cypress/integration/class_test_spec.js
+describe('اختبار الصفوف', () => {
+  it('يتحقق من أن التنبيه يحتوي على الصف الصحيح', () => {
+    cy.visit('http://localhost:3000');
+    cy.get('.alert')
+      .should('have.class', 'success') // التحقق من وجود الصف
+      .and('contain', 'Operation successful'); // التحقق من النص داخل العنصر
+  });
+});
+```
+
+##### **3.4. اختبار الوظائف (Functions)**
+
+يمكنك انتظار تغيرات الحالة أو النتائج الناتجة عن وظيفة معينة.
+
+###### **مثال مع انتظار تغير الحالة:**
+
+```jsx
+function Timer() {
+  const [time, setTime] = React.useState(0);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setTime((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return <div>Time: {time}</div>;
+}
+```
+
+### كيفية كتابة اختبار للوظائف:
+
+```javascript
+// cypress/integration/function_test_spec.js
+describe('اختبار الوظائف', () => {
+  it('ينتظر أن يتغير العداد', () => {
+    cy.visit('http://localhost:3000');
+    cy.get('div').contains('Time: 0'); // التحقق من البداية
+    cy.wait(2000); // انتظار تغير الوقت
+    cy.get('div').contains('Time: 2'); // التحقق من النتيجة
+  });
+});
+```
+
+---
+
+#### **4. نصائح مفيدة**
+
+1. **محاكاة طلبات API باستخدام `cy.intercept`:**
+   
+   ```javascript
+   cy.intercept('GET', '/api/data', { fixture: 'data.json' }).as('getData');
+   cy.wait('@getData');
+   ```
+
+2. **تنظيف الحالة قبل كل اختبار باستخدام `beforeEach`:**
+   
+   ```javascript
+   beforeEach(() => {
+     cy.visit('http://localhost:3000');
+   });
+   ```
+
+3. **استخدام ملفات Fixtures لتخزين بيانات الاختبار:**
+   
+   - ضع البيانات في `cypress/fixtures/example.json`.
+   - استخدمها داخل الاختبارات:
+     
+     ```javascript
+     cy.fixture('example').then((data) => {
+       cy.get('input').type(data.username);
+     });
+     ```
+
+---
+
+### خاتمة
+
+باتباع هذا الدليل، يمكنك كتابة اختبارات شاملة لتطبيق React الخاص بك باستخدام Cypress. إذا كنت تحتاج إلى مساعدة إضافية، فلا تتردد في طلب الدعم.
+
+
+
+
+describe("<Register />", () => {
+  beforeEach(() => {
+    cy.mount(<Register />);
+  });
+
+  it("should show validation errors for empty fields", () => {
+    cy.get('[data-cy="submit-button"]').click();
+    cy.get('[data-cy="error-email"]').should("have.text", "Email is required");
+    cy.get('[data-cy="error-password"]').should("have.text", "Password is required");
+    cy.get('[data-cy="error-confirm-password"]').should("have.text", "Passwords must match");
+  });
+
+  it("should show validation error for invalid email format", () => {
+    cy.get('[data-cy="input-email"]').type("invalidemail");
+    cy.get('[data-cy="submit-button"]').click();
+    cy.get('[data-cy="error-email"]').should("have.text", "Email is invalid");
+  });
+
+  it("should show validation error for password mismatch", () => {
+    cy.get('[data-cy="input-password"]').type("password123");
+    cy.get('[data-cy="input-confirm-password"]').type("password321");
+    cy.get('[data-cy="submit-button"]').click();
+    cy.get('[data-cy="error-confirm-password"]').should("have.text", "Passwords must match");
+  });
+
+  it("should submit form successfully with valid data", () => {
+    cy.get('[data-cy="input-email"]').type("validemail@example.com");
+    cy.get('[data-cy="input-password"]').type("password123");
+    cy.get('[data-cy="input-confirm-password"]').type("password123");
+    cy.get('[data-cy="submit-button"]').click();
+    cy.log("Form submitted successfully");
+  });
+});

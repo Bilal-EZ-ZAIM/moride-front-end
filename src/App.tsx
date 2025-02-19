@@ -17,8 +17,22 @@ import { ResetPassword } from "./pages/ResetPassword";
 import { Payment } from "./pages/Payment";
 import Login from "./pages/Login";
 import WelcomePage from "./pages/WelcomePage";
+import { CreateProfile } from "./pages/CreateProfile";
+import { isLogins } from "./store/features/auth/authSlice";
+import { useEffect } from "react";
+import { useAppDispatch } from "./hooks";
 
 export function App() {
+  const dispatch = useAppDispatch();
+
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    useEffect(() => {
+      dispatch(isLogins());
+    }, []);
+  }
+
   return (
     <BrowserRouter>
       <Routes>
@@ -30,11 +44,12 @@ export function App() {
           <Route path="bookTrip" element={<BookTrip />} />
           <Route path="driver/:id" element={<DriverProfile />} />
           <Route path="driver/dashboard" element={<DriverDashboard />} />
-          <Route path="user/profile" element={<UserProfile />} />
+          <Route path="/profile" element={<UserProfile />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/welcome/page" element={<WelcomePage/>} />
+          <Route path="/welcome/page" element={<WelcomePage />} />
+          <Route path="/create/profile" element={<CreateProfile />} />
         </Route>
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/admin" element={<SuperAdminDashboard />} />
