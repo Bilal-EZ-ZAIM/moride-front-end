@@ -8,6 +8,7 @@ import {
   Linkedin,
   MessageSquare,
   Globe,
+  User,
 } from "lucide-react";
 import { Button } from "../components/common/Button";
 import { ProfielIntrface } from "../interface/profileInterface";
@@ -72,6 +73,53 @@ export function CreateProfile() {
               onSubmit={handleSubmit(onSubmit)}
               className="p-8 pt-4 space-y-6"
             >
+              {/* Name Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Prénom
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      {...register("firstname", {
+                        required: "Le prénom est obligatoire",
+                      })}
+                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
+                      placeholder="Votre prénom"
+                    />
+                    {errors.firstname && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.firstname.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nom
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      {...register("lastname", {
+                        required: "Le nom est obligatoire",
+                      })}
+                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
+                      placeholder="Votre nom"
+                    />
+                    {errors.lastname && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.lastname.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Adresse
@@ -221,3 +269,5 @@ export function CreateProfile() {
     </div>
   );
 }
+
+export default CreateProfile

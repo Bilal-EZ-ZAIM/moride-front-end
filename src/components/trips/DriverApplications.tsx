@@ -37,7 +37,7 @@ export function DriverApplications() {
   ];
 
   // Function to open the modal
-  const openModal = (offer) => {
+  const openModal = (offer:any) => {
     setSelectedOffer(offer);
     setIsModalOpen(true);
   };
@@ -49,7 +49,7 @@ export function DriverApplications() {
   };
 
   // Function to handle price input change
-  const handlePriceChange = (event) => {
+  const handlePriceChange = (event:any) => {
     setPriceInput(event.target.value);
   };
 

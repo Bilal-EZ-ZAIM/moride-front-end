@@ -68,6 +68,13 @@ export function Header() {
               Chauffeurs
             </Link>
 
+            <Link
+              to="driver"
+              className="text-gray-600 hover:text-emerald-600 transition-colors"
+            >
+              Driver
+            </Link>
+
             <div className="flex items-center gap-6">
               <Link to="/messages" className="relative">
                 <MessageSquare className="w-6 h-6 text-gray-600 hover:text-emerald-600" />

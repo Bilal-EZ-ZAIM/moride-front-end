@@ -44,10 +44,6 @@ const initialState: AuthState = {
 export const registers = createAsyncThunk(
   "auth/register",
   async (data: RegisterIntrface, thunkAPI) => {
-    console.log("===========");
-
-    console.log("Data ", data);
-    console.log("===========");
 
     try {
       const res: AxiosResponse = await axios.post(api + "register", data, {
@@ -56,7 +52,6 @@ export const registers = createAsyncThunk(
         },
       });
 
-      console.log("Response from API:", res.data);
 
       return res.data;
     } catch (error: any) {
@@ -72,9 +67,6 @@ export const registers = createAsyncThunk(
 export const login = createAsyncThunk(
   "auth/login",
   async (data: LoginIntrface, thunkAPI) => {
-    console.log("Data being sent to API:", data);
-    console.log(api);
-
     try {
       const res: AxiosResponse = await axios.post(`${api}login`, data, {
         headers: {
@@ -82,7 +74,6 @@ export const login = createAsyncThunk(
         },
       });
 
-      console.log("Response from API:", res.data);
 
       return res.data;
     } catch (error: any) {
@@ -100,11 +91,6 @@ export const verifyOtp = createAsyncThunk(
   "auth/verifyOtp",
   async (data, thunkAPI: any) => {
     const state = thunkAPI.getState().auth;
-    console.log(state);
-
-    console.log("Data being sent to API:", data);
-    console.log("Current token:", state.token);
-
     try {
       const res = await axios.post(
         `http://localhost:8001/api/auth/verifyAcount/${state.token}`,
@@ -116,7 +102,6 @@ export const verifyOtp = createAsyncThunk(
         }
       );
 
-      console.log("Response from API:", res.data);
 
       return res.data;
     } catch (error: any) {
@@ -220,7 +205,6 @@ export const isLogins = createAsyncThunk(
         },
       });
 
-      console.log("Response from API:", res.data);
 
       return res.data;
     } catch (error: any) {
@@ -267,17 +251,14 @@ const authSlice = createSlice({
     builder
       // Register user
       .addCase(registers.pending, (state) => {
-        console.log("is pending");
         state.isLoading = true;
         state.error = null;
         state.status = false;
       })
       .addCase(registers.fulfilled, (state, action: any) => {
-        console.log("is fulfilled");
         state.isLoading = false;
         state.errorRegister = null;
         state.user = action.payload;
-        console.log("User registered successfully:", action.payload);
         state.isLogin = true;
         state.token = action.payload.token;
         state.errorRegister = null;
@@ -295,7 +276,6 @@ const authSlice = createSlice({
     // login user
     builder
       .addCase(login.pending, (state) => {
-        console.log("is pending");
         state.isLoading = true;
         state.status = false;
         state.error = null;

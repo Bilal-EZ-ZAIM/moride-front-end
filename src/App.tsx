@@ -2,14 +2,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import { Home } from "./pages/Home";
 import { Register } from "./pages/Register";
-import { DriverProfile } from "./pages/DriverProfile";
 import { DriversListing } from "./pages/DriversListing";
 import { UserProfile } from "./pages/UserProfile";
 import { DriverDashboard } from "./pages/DriverDashboard";
 import { BookTrip } from "./pages/BookTrip";
 import { TripOffers } from "./pages/TripOffers";
 import { TripDetails } from "./pages/TripDetails";
-import { Messages } from "./pages/Messages";
 import { SuperAdminDashboard } from "./pages/SuperAdminDashboard";
 import { AdminUsers } from "./pages/AdminUsers";
 import { ChangePassword } from "./pages/ChangePassword";
@@ -21,6 +19,9 @@ import { CreateProfile } from "./pages/CreateProfile";
 import { isLogins } from "./store/features/auth/authSlice";
 import { useEffect } from "react";
 import { useAppDispatch } from "./hooks";
+import Messages from "./pages/Messages";
+import CreateDiriverProfile from "./pages/CreateDriverProfile";
+import { DriverProfile } from "./pages/DriverProfile";
 
 export function App() {
   const dispatch = useAppDispatch();
@@ -42,16 +43,17 @@ export function App() {
           <Route path="tripDetails" element={<TripDetails />} />
           <Route path="tripOffers" element={<TripOffers />} />
           <Route path="bookTrip" element={<BookTrip />} />
-          <Route path="driver/:id" element={<DriverProfile />} />
+          <Route path="driver" element={<DriverProfile />} />
           <Route path="driver/dashboard" element={<DriverDashboard />} />
           <Route path="/profile" element={<UserProfile />} />
-          <Route path="/messages" element={<Messages />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/welcome/page" element={<WelcomePage />} />
           <Route path="/create/profile" element={<CreateProfile />} />
+          <Route path="/create/driver" element={<CreateDiriverProfile />} />
         </Route>
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/messages" element={<Messages />} />
         <Route path="/admin" element={<SuperAdminDashboard />} />
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/login" element={<Login />} />

@@ -10,6 +10,8 @@ const api: string = "http://localhost:3000/api/v1/profile/";
 
 const token = localStorage.getItem("token");
 
+console.log(token)
+
 interface AuthState {
   isLoading: boolean;
   profile: any | null;
@@ -36,7 +38,6 @@ export const getProfile = createAsyncThunk(
         },
       });
 
-      console.log("Response from API:", res.data);
 
       return res.data;
     } catch (error: any) {
@@ -53,6 +54,7 @@ export const getProfile = createAsyncThunk(
 export const createProfile = createAsyncThunk(
   "profile/createProfile",
   async (createProfile: ProfielIntrface, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.post(`${api}create`, createProfile, {
         headers: {
@@ -60,8 +62,6 @@ export const createProfile = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log("Response from API:", res.data);
 
       return res.data;
     } catch (error: any) {
@@ -85,7 +85,6 @@ export const uploadImage = createAsyncThunk(
         },
       });
 
-      console.log("Response from API:", res.data);
 
       return res.data;
     } catch (error: any) {
@@ -114,7 +113,6 @@ const profileSlice = createSlice({
       })
       .addCase(getProfile.rejected, (state, action: any) => {
         state.isLoading = false;
-        console.log(action.payload.response);
         state.profile = null;
         state.erros = action.payload.response.data.message;
       });
@@ -133,8 +131,6 @@ const profileSlice = createSlice({
       })
       .addCase(createProfile.rejected, (state, action: any) => {
         state.isLoading = false;
-        console.log(state.isLoading);
-        console.log(action.payload);
         state.profile = null;
         state.erros = action.payload.response.data.message;
       });
@@ -152,8 +148,6 @@ const profileSlice = createSlice({
       })
       .addCase(uploadImage.rejected, (state, action: any) => {
         state.isLoading = false;
-        console.log(state.isLoading);
-        console.log(action.payload);
         state.profile = null;
         state.erros = action.payload.response.data.message;
       });

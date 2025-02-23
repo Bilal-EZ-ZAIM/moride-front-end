@@ -17,6 +17,7 @@ export function UserProfile() {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
+  console.log(profile);
   useEffect(() => {
     dispatch(getProfile());
   }, [counter]);
@@ -25,7 +26,8 @@ export function UserProfile() {
     imageBanner: profile?.imageBanner,
     imageProfile: profile?.imageProfile,
     profileHighlight: profile?.profileHighlight,
-    username: user?.username,
+    firstname: profile?.firstname,
+    lastname: profile?.lastname,
   };
 
   const info = {

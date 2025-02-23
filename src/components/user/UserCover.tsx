@@ -191,7 +191,9 @@ export function UserCover({ data }: any) {
             </div>
 
             <div className="flex-1 text-white pb-2">
-              <h1 className="text-3xl font-bold mb-1">{data?.username} </h1>
+              <h1 className="text-3xl font-bold mb-1">
+                {data?.firstname} {data?.lastname}{" "}
+              </h1>
               <p className="text-emerald-300">{data?.profileHighlight}</p>
             </div>
           </div>
