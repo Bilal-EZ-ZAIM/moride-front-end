@@ -3,6 +3,7 @@ import authSlice from "./features/auth/authSlice";
 import profileSlice from "./features/profile/profileSlice";
 import DriverSlice from "./features/driver/driverSlice";
 import WorkingSlice from "./features/working/workingSlice";
+import carSlice from "./features/car/carSlice";
 // ...
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     profile: profileSlice,
     driver: DriverSlice,
     working: WorkingSlice,
+    car: carSlice,
   },
 });
 
