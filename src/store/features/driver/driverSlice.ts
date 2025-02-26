@@ -8,7 +8,9 @@ interface DriverState {
   isLoading: boolean;
   profileDriver: any | null;
   errors: string | null;
+  drivers: [];
   counter: number;
+  DriverDetails: any;
 }
 
 // Initial state
@@ -16,7 +18,9 @@ const initialState: DriverState = {
   isLoading: false,
   profileDriver: null,
   errors: null,
+  drivers: [],
   counter: 0,
+  DriverDetails: null,
 };
 
 // Thunks
@@ -31,6 +35,46 @@ export const getProfile = createAsyncThunk(
         },
       });
 
+      return res.data;
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || error.message;
+      return thunkAPI.rejectWithValue(errorMsg);
+    }
+  }
+);
+
+export const getDriverById = createAsyncThunk(
+  "driver/getDriverById ",
+  async (id: string, thunkAPI: any) => {
+    try {
+      const res = await axios.get(`${api}getDirver/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return res.data;
+    } catch (error: any) {
+      console.error(
+        "Error while verifying login:",
+        error.response?.data || error.message
+      );
+
+      return thunkAPI.rejectWithValue(error.response?.data || error.message); // Pass specific error message
+    }
+  }
+);
+
+export const getAllDrivers = createAsyncThunk(
+  "driver/getAllDrivers",
+  async (_, thunkAPI: any) => {
+    try {
+      const res = await axios.get(`${api}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       return res.data;
     } catch (error: any) {
@@ -93,10 +137,44 @@ const DriverSlice = createSlice({
       .addCase(getProfile.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.profileDriver = action.payload;
-        console.log("sdkbqvicd ")
+        console.log();
         state.errors = null;
       })
       .addCase(getProfile.rejected, (state, action: any) => {
+        state.isLoading = false;
+        state.errors = action.payload;
+      });
+
+    // Handle get driver with id
+    builder
+      .addCase(getDriverById.pending, (state) => {
+        state.errors = null;
+        state.isLoading = true;
+      })
+      .addCase(getDriverById.fulfilled, (state, action: any) => {
+        state.isLoading = false;
+        state.DriverDetails = action.payload;
+        console.log(action.payload);
+        state.errors = null;
+      })
+      .addCase(getDriverById.rejected, (state, action: any) => {
+        state.isLoading = false;
+        state.errors = action.payload;
+      });
+
+    // Handle get all drivers
+    builder
+      .addCase(getAllDrivers.pending, (state) => {
+        state.errors = null;
+        state.isLoading = true;
+      })
+      .addCase(getAllDrivers.fulfilled, (state, action: any) => {
+        state.isLoading = false;
+        state.drivers = action.payload;
+        console.log(action.payload);
+        state.errors = null;
+      })
+      .addCase(getAllDrivers.rejected, (state, action: any) => {
         state.isLoading = false;
         state.errors = action.payload;
       });

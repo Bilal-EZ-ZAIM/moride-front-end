@@ -12,11 +12,12 @@ import {
 } from "lucide-react";
 
 interface ProfileCoverProps {
-  onEdit: () => void;
+  onEdit?: () => void; 
   imageUrl: string;
   profileUrl: string;
   name: string;
   status: string;
+  isOwner: boolean;
 }
 
 export function ProfileCover({
@@ -25,6 +26,7 @@ export function ProfileCover({
   profileUrl,
   name,
   status,
+  isOwner,
 }: ProfileCoverProps) {
   const [profileImage, setProfileImage] = useState(profileUrl);
   const [bannerImage, setBannerImage] = useState(imageUrl);
@@ -81,81 +83,83 @@ export function ProfileCover({
             src={bannerImage}
             alt="Cover"
             className={`w-full h-full object-cover transition-all duration-500 ${
-              isHoveringBanner ? "scale-[1.02] blur-[1px]" : ""
+              isHoveringBanner && isOwner ? "scale-[1.02] blur-[1px]" : ""
             }`}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
-          <div
-            className={`absolute bottom-4 right-4 flex items-center gap-2 transition-opacity duration-200 ${
-              isHoveringBanner ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {isBannerUploaded && (
-              <button
-                className="p-2 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-all duration-200 shadow-lg hover:shadow-xl"
-                onClick={resetBannerImage}
-                title="Reset banner image"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            )}
-            <button
-              className="p-2 bg-gray-800/90 text-white rounded-full hover:bg-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl"
-              onClick={() => bannerFileInput.current?.click()}
-              title="Upload banner image"
+          {isOwner && (
+            <div
+              className={`absolute bottom-4 right-4 flex items-center gap-2 transition-opacity duration-200 ${
+                isHoveringBanner ? "opacity-100" : "opacity-0"
+              }`}
             >
-              {isBannerUploaded ? (
-                <Upload className="w-5 h-5" />
-              ) : (
-                <Camera className="w-5 h-5" />
+              {isBannerUploaded && (
+                <button
+                  className="p-2 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  onClick={resetBannerImage}
+                  title="Reset banner image"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               )}
-            </button>
-          </div>
+              <button
+                className="p-2 bg-gray-800/90 text-white rounded-full hover:bg-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl"
+                onClick={() => bannerFileInput.current?.click()}
+                title="Upload banner image"
+              >
+                {isBannerUploaded ? (
+                  <Upload className="w-5 h-5" />
+                ) : (
+                  <Camera className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+          )}
           <input
             ref={bannerFileInput}
             type="file"
             accept="image/*"
             className="hidden"
             onChange={handleBannerUpload}
+            disabled={!isOwner}
           />
         </div>
       </div>
 
       {/* Edit Button */}
-      <div className="container mx-auto pt-4 px-2 bg-red-300 z-50 flex justify-between">
-        <button
-          className="  px-4 py-2 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium backdrop-blur-sm"
-          onClick={onEdit}
-        >
-          <Edit className="w-4 h-4" />
-          Edit Profile
-        </button>
+      <div className="container mx-auto pt-4 px-2 z-50 flex justify-between">
+        {isOwner && (
+          <button
+            className="px-4 py-2 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium backdrop-blur-sm"
+            onClick={onEdit}
+          >
+            <Edit className="w-4 h-4" />
+            Edit Profile
+          </button>
+        )}
 
-        <div className=" flex items-center gap-2">
-        <a
-          href="mailto:contact@example.com"
-          className="px-3 py-1.5 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium backdrop-blur-sm"
-        >
-          <Mail className="w-4 h-4" />
-          Contact
-        </a>
-        <a
-          href="#"
-          className="px-3 py-1.5 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium backdrop-blur-sm"
-        >
-          <Link2 className="w-4 h-4" />
-          Share
-        </a>
+        <div className="flex items-center gap-2">
+          <a
+            href="mailto:contact@example.com"
+            className="px-3 py-1.5 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium backdrop-blur-sm"
+          >
+            <Mail className="w-4 h-4" />
+            Contact
+          </a>
+          <a
+            href="#"
+            className="px-3 py-1.5 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium backdrop-blur-sm"
+          >
+            <Link2 className="w-4 h-4" />
+            Share
+          </a>
+        </div>
       </div>
-      </div>
-
-      {/* Quick Actions */}
-      
 
       {/* Profile Section */}
-      <div className=" absolute bottom-0 left-0 right-0">
-        <div className="container  mx-auto px-4 pb-4">
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="container mx-auto px-4 pb-4">
           <div className="flex items-end gap-6">
             {/* Profile Image */}
             <div
@@ -172,38 +176,42 @@ export function ProfileCover({
                   />
                   <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-500 rounded-full border-4 border-white shadow-lg" />
                 </div>
-                <div
-                  className={`absolute inset-0 rounded-full bg-black/20 transition-opacity duration-200 ${
-                    isHoveringProfile ? "opacity-100" : "opacity-0"
-                  }`}
-                />
+                {isOwner && (
+                  <div
+                    className={`absolute inset-0 rounded-full bg-black/20 transition-opacity duration-200 ${
+                      isHoveringProfile ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                )}
 
-                <div
-                  className={`absolute bottom-1 right-1 flex items-center gap-2 transition-opacity duration-200 ${
-                    isHoveringProfile ? "opacity-100" : "opacity-0"
-                  }`}
-                >
-                  {isProfileUploaded && (
-                    <button
-                      className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200 shadow-lg hover:shadow-xl"
-                      onClick={resetProfileImage}
-                      title="Reset profile image"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                  <button
-                    className="p-2 bg-emerald-500 text-white rounded-full hover:bg-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl"
-                    onClick={() => profileFileInput.current?.click()}
-                    title="Upload profile image"
+                {isOwner && (
+                  <div
+                    className={`absolute bottom-1 right-1 flex items-center gap-2 transition-opacity duration-200 ${
+                      isHoveringProfile ? "opacity-100" : "opacity-0"
+                    }`}
                   >
-                    {isProfileUploaded ? (
-                      <Upload className="w-4 h-4" />
-                    ) : (
-                      <Camera className="w-4 h-4" />
+                    {isProfileUploaded && (
+                      <button
+                        className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                        onClick={resetProfileImage}
+                        title="Reset profile image"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     )}
-                  </button>
-                </div>
+                    <button
+                      className="p-2 bg-emerald-500 text-white rounded-full hover:bg-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                      onClick={() => profileFileInput.current?.click()}
+                      title="Upload profile image"
+                    >
+                      {isProfileUploaded ? (
+                        <Upload className="w-4 h-4" />
+                      ) : (
+                        <Camera className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
               <input
                 ref={profileFileInput}
@@ -211,6 +219,7 @@ export function ProfileCover({
                 accept="image/*"
                 className="hidden"
                 onChange={handleProfileUpload}
+                disabled={!isOwner}
               />
             </div>
 

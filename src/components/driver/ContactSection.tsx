@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Phone, MapPin, Facebook, Linkedin, Globe } from 'lucide-react';
-import { Button } from '../common/Button';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useState } from "react";
+import { Phone, MapPin, Facebook, Linkedin, Globe } from "lucide-react";
+import { Button } from "../common/Button";
+import { useForm, Controller } from "react-hook-form";
 
 interface ContactSectionProps {
   phone: string;
@@ -12,16 +12,26 @@ interface ContactSectionProps {
     whatsapp: string;
     portfolio: string;
   };
+  isOwner: boolean;
 }
 
-export function ContactSection({ phone, address, social }: ContactSectionProps) {
+export function ContactSection({
+  phone,
+  address,
+  social,
+  isOwner,
+}: ContactSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
   const [updatedPhone, setUpdatedPhone] = useState(phone);
   const [updatedAddress, setUpdatedAddress] = useState(address);
   const [updatedSocial, setUpdatedSocial] = useState(social);
 
-  const { handleSubmit, control, formState: { errors } } = useForm({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       phone: updatedPhone,
       address: updatedAddress,
@@ -81,7 +91,9 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
           <div className="bg-blue-100 p-2 rounded-full group-hover:bg-blue-200 transition-colors">
             <Facebook className="w-5 h-5 text-blue-600" />
           </div>
-          <span className="text-gray-700 group-hover:text-gray-900">Facebook</span>
+          <span className="text-gray-700 group-hover:text-gray-900">
+            Facebook
+          </span>
         </a>
 
         <a
@@ -93,7 +105,9 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
           <div className="bg-blue-100 p-2 rounded-full group-hover:bg-blue-200 transition-colors">
             <Linkedin className="w-5 h-5 text-blue-700" />
           </div>
-          <span className="text-gray-700 group-hover:text-gray-900">LinkedIn</span>
+          <span className="text-gray-700 group-hover:text-gray-900">
+            LinkedIn
+          </span>
         </a>
 
         <a
@@ -105,43 +119,51 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
           <div className="bg-emerald-100 p-2 rounded-full group-hover:bg-emerald-200 transition-colors">
             <Globe className="w-5 h-5 text-emerald-600" />
           </div>
-          <span className="text-gray-700 group-hover:text-gray-900">Portfolio</span>
+          <span className="text-gray-700 group-hover:text-gray-900">
+            Portfolio
+          </span>
         </a>
       </div>
 
-      <div className="space-y-3">
-        <Button
-          onClick={handleOpenModal}
-          className="w-full bg-emerald-600 hover:bg-emerald-700"
-        >
-          Mettre à jour téléphone et adresse
-        </Button>
-        <Button
-          onClick={handleOpenSocialModal}
-          variant="secondary"
-          className="w-full"
-        >
-          Mettre à jour réseaux sociaux
-        </Button>
-      </div>
+      {isOwner ? (
+        <div className="space-y-3">
+          <Button
+            onClick={handleOpenModal}
+            className="w-full bg-emerald-600 hover:bg-emerald-700"
+          >
+            Mettre à jour téléphone et adresse
+          </Button>
+          <Button
+            onClick={handleOpenSocialModal}
+            variant="secondary"
+            className="w-full"
+          >
+            Mettre à jour réseaux sociaux
+          </Button>
+        </div>
+      ) : null}
 
       {/* Modal for Phone and Address */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-xl p-6 w-96 shadow-xl">
-            <h3 className="text-xl font-bold mb-6 text-gray-800">Mettre à jour les informations</h3>
+            <h3 className="text-xl font-bold mb-6 text-gray-800">
+              Mettre à jour les informations
+            </h3>
             <form onSubmit={handleSubmit(handleSave)} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Téléphone
+                </label>
                 <Controller
                   control={control}
                   name="phone"
                   rules={{
-                    required: 'Le téléphone est requis',
+                    required: "Le téléphone est requis",
                     pattern: {
                       value: /^\+212\s?[67]\d{8}$/,
-                      message: 'Format invalide. Exemple: +212 612345678'
-                    }
+                      message: "Format invalide. Exemple: +212 612345678",
+                    },
                   }}
                   render={({ field }) => (
                     <input
@@ -153,16 +175,20 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
                   )}
                 />
                 {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone.message as string}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.phone.message as string}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Adresse
+                </label>
                 <Controller
                   control={control}
                   name="address"
-                  rules={{ required: 'L\'adresse est requise' }}
+                  rules={{ required: "L'adresse est requise" }}
                   render={({ field }) => (
                     <input
                       type="text"
@@ -172,7 +198,9 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
                   )}
                 />
                 {errors.address && (
-                  <p className="text-red-500 text-sm mt-1">{errors.address.message as string}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.address.message as string}
+                  </p>
                 )}
               </div>
 
@@ -184,9 +212,7 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
                 >
                   Annuler
                 </Button>
-                <Button type="submit">
-                  Sauvegarder
-                </Button>
+                <Button type="submit">Sauvegarder</Button>
               </div>
             </form>
           </div>
@@ -197,18 +223,25 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
       {isSocialModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-xl p-6 w-96 shadow-xl">
-            <h3 className="text-xl font-bold mb-6 text-gray-800">Mettre à jour les réseaux sociaux</h3>
-            <form onSubmit={handleSubmit(handleSocialSave)} className="space-y-4">
+            <h3 className="text-xl font-bold mb-6 text-gray-800">
+              Mettre à jour les réseaux sociaux
+            </h3>
+            <form
+              onSubmit={handleSubmit(handleSocialSave)}
+              className="space-y-4"
+            >
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Facebook
+                </label>
                 <Controller
                   control={control}
                   name="social.facebook"
                   rules={{
                     pattern: {
                       value: /^https?:\/\/(www\.)?facebook\.com/,
-                      message: 'URL Facebook invalide'
-                    }
+                      message: "URL Facebook invalide",
+                    },
                   }}
                   render={({ field }) => (
                     <input
@@ -220,20 +253,24 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
                   )}
                 />
                 {errors.social?.facebook && (
-                  <p className="text-red-500 text-sm mt-1">{errors.social.facebook.message as string}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.social.facebook.message as string}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  LinkedIn
+                </label>
                 <Controller
                   control={control}
                   name="social.linkedin"
                   rules={{
                     pattern: {
                       value: /^https?:\/\/(www\.)?linkedin\.com/,
-                      message: 'URL LinkedIn invalide'
-                    }
+                      message: "URL LinkedIn invalide",
+                    },
                   }}
                   render={({ field }) => (
                     <input
@@ -245,20 +282,24 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
                   )}
                 />
                 {errors.social?.linkedin && (
-                  <p className="text-red-500 text-sm mt-1">{errors.social.linkedin.message as string}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.social.linkedin.message as string}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Portfolio</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Portfolio
+                </label>
                 <Controller
                   control={control}
                   name="social.portfolio"
                   rules={{
                     pattern: {
                       value: /^https?:\/\//,
-                      message: 'URL invalide'
-                    }
+                      message: "URL invalide",
+                    },
                   }}
                   render={({ field }) => (
                     <input
@@ -270,7 +311,9 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
                   )}
                 />
                 {errors.social?.portfolio && (
-                  <p className="text-red-500 text-sm mt-1">{errors.social.portfolio.message as string}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.social.portfolio.message as string}
+                  </p>
                 )}
               </div>
 
@@ -282,9 +325,7 @@ export function ContactSection({ phone, address, social }: ContactSectionProps) 
                 >
                   Annuler
                 </Button>
-                <Button type="submit">
-                  Sauvegarder
-                </Button>
+                <Button type="submit">Sauvegarder</Button>
               </div>
             </form>
           </div>

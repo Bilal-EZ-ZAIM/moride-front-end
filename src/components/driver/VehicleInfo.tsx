@@ -6,43 +6,24 @@ import { CreateVehicleModal } from "./CreateVehicleModal";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { getMyCar } from "../../store/features/car/carSlice";
 
-export function VehicleInfo() {
+export function VehicleInfo({ isOwner }: any) {
   const dispatch = useAppDispatch();
   const { isLoading, car } = useAppSelector((state) => state.car);
-  console.log(car); 
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [vehicleData, setVehicleData] = useState({});
-
-  const handleSave = (data:any) => {
-    setVehicleData(data); 
-    setIsEditModalOpen(false);
-    setIsCreateModalOpen(false);
-  };
 
   useEffect(() => {
-    const getMyCars = async () => {
-      await dispatch(getMyCar()); 
-    };
-
-    getMyCars();
-
-    return () => {
-      console.log("Cleaning up");
-    };
+    dispatch(getMyCar());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (car) {
-      setVehicleData(car); 
-    }
-  }, [car]);
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-2xl font-bold text-gray-500">Loading...</div>
+      <div className="flex justify-center items-center h-screen bg-white">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="border-t-4 border-emerald-500 border-solid rounded-full w-16 h-16 animate-spin"></div>
+          <div className="text-2xl font-bold text-gray-500">Chargement...</div>
+        </div>
       </div>
     );
   }
@@ -52,7 +33,7 @@ export function VehicleInfo() {
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold">Véhicule</h2>
-          {vehicleData?.model ? (
+          {isOwner && car?.model ? ( // Show the edit button only if isOwner is true
             <Button
               variant="outline"
               size="sm"
@@ -62,7 +43,7 @@ export function VehicleInfo() {
               <Edit className="w-4 h-4" />
               Modifier
             </Button>
-          ) : (
+          ) : !car?.model ? ( // Show the create button only if car does not exist
             <Button
               variant="primary"
               size="sm"
@@ -72,14 +53,17 @@ export function VehicleInfo() {
               <PlusCircle className="w-4 h-4" />
               Créer Véhicule
             </Button>
-          )}
+          ) : null}
         </div>
 
-        {vehicleData?.model ? (
+        {car?.model ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="relative">
               <img
-                src={vehicleData.image?.url || "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&q=80"}
+                src={
+                  car.image?.url ||
+                  "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&q=80"
+                }
                 alt="Vehicle"
                 className="w-full h-48 object-cover rounded-lg"
               />
@@ -89,15 +73,17 @@ export function VehicleInfo() {
               <div className="flex items-center gap-3">
                 <Car className="w-5 h-5 text-emerald-600" />
                 <div>
-                  <div className="font-semibold">{vehicleData?.model}</div>
-                  <div className="text-sm text-gray-600">{vehicleData?.transmission}</div>
+                  <div className="font-semibold">{car.model}</div>
+                  <div className="text-sm text-gray-600">
+                    {car.transmission}
+                  </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-emerald-600" />
                 <div>
-                  <div className="font-semibold">{vehicleData.year}</div>
+                  <div className="font-semibold">{car.year}</div>
                   <div className="text-sm text-gray-600">Année du véhicule</div>
                 </div>
               </div>
@@ -105,7 +91,7 @@ export function VehicleInfo() {
               <div className="flex items-center gap-3">
                 <Settings className="w-5 h-5 text-emerald-600" />
                 <div>
-                  <div className="font-semibold">{vehicleData.license}</div>
+                  <div className="font-semibold">{car.license}</div>
                   <div className="text-sm text-gray-600">Immatriculation</div>
                 </div>
               </div>
@@ -121,14 +107,12 @@ export function VehicleInfo() {
       <EditVehicleModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        onSave={handleSave}
-        vehicleData={vehicleData}
+        vehicleData={car}
       />
 
       <CreateVehicleModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        onSave={handleSave}
       />
     </>
   );

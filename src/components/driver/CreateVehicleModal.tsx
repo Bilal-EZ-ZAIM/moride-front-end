@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { X, Upload, Loader2, ImageIcon } from 'lucide-react';
+import { X, Loader2, ImageIcon } from 'lucide-react';
 import { Button } from '../common/Button';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { createCar } from '../../store/features/car/carSlice';

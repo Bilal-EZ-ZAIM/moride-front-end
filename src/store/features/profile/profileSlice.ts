@@ -10,9 +10,10 @@ const api: string = "http://localhost:3000/api/v1/profile/";
 
 const token = localStorage.getItem("token");
 
-console.log(token)
+console.log(token);
 
 interface AuthState {
+  id: string;
   isLoading: boolean;
   profile: any | null;
   erros: string | null;
@@ -21,6 +22,7 @@ interface AuthState {
 
 // Initial state
 const initialState: AuthState = {
+  id: "",
   isLoading: false,
   profile: null,
   erros: null,
@@ -37,7 +39,6 @@ export const getProfile = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-
 
       return res.data;
     } catch (error: any) {
@@ -85,7 +86,6 @@ export const uploadImage = createAsyncThunk(
         },
       });
 
-
       return res.data;
     } catch (error: any) {
       console.error(error.response?.data || error.message);
@@ -109,6 +109,7 @@ const profileSlice = createSlice({
       .addCase(getProfile.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.profile = action.payload;
+        state.id = action.payload._id;
         state.erros = null;
       })
       .addCase(getProfile.rejected, (state, action: any) => {

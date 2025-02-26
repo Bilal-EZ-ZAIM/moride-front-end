@@ -22,6 +22,8 @@ import { useAppDispatch } from "./hooks";
 import Messages from "./pages/Messages";
 import CreateDiriverProfile from "./pages/CreateDriverProfile";
 import { DriverProfile } from "./pages/DriverProfile";
+import { DriverDetails } from "./pages/DriverDetails";
+import MyTrips from "./pages/MyTrips";
 
 export function App() {
   const dispatch = useAppDispatch();
@@ -40,10 +42,12 @@ export function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="drivers" element={<DriversListing />} />
+          <Route path="/MyTrips" element={<MyTrips />} />
           <Route path="tripDetails" element={<TripDetails />} />
-          <Route path="tripOffers" element={<TripOffers />} />
+          <Route path="bookings" element={<TripOffers />} />
           <Route path="bookTrip" element={<BookTrip />} />
           <Route path="driver" element={<DriverProfile />} />
+          <Route path="/driver/:id" element={<DriverDetails />} />
           <Route path="driver/dashboard" element={<DriverDashboard />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/payment" element={<Payment />} />

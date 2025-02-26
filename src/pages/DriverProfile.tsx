@@ -17,7 +17,6 @@ export function DriverProfile() {
   const { profile } = useAppSelector((state) => state.profile);
   const dispatch = useAppDispatch();
 
-
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(getProfile());
@@ -31,38 +30,6 @@ export function DriverProfile() {
     };
   }, []); // Make sure to include dependencies
 
-  const driverData = {
-    _id: "67b9218c7bd867b7845154c2",
-    userId: "67b872e4de0986e0a4c891b5",
-    gender: "Homme",
-    birthdate: "2007-05-19T00:00:00.000Z",
-    nationality: "Accusamus pariatur",
-    address: "Voluptatem Ut in do",
-    licenseNumber: "842",
-    licenseExpirationDate: "1979-11-28T00:00:00.000Z",
-    drivingExperience: 41,
-    status: "Disponible",
-    rating: 0,
-    preferredLanguages: ["Anglais", "Espagnol", "Arabe"],
-    profile: {
-      firstname: "bilal",
-      lastname: "ezzaim",
-      address: "Youssofia",
-      phone: "+212648161077",
-      profileHighlight: "Irure odit voluptate",
-      facebook: "https://www.kugokex.me.uk",
-      linkedIn: "https://www.vylotemes.net",
-      whatsapp: "https://www.hymo.net",
-      portfolio: "https://www.vylotemes.net",
-      imageProfile: {
-        url: "https://res.cloudinary.com/dsldmzxqt/image/upload/v1737556717/profile_tfo9f4.png",
-      },
-      imageBanner: {
-        url: "https://res.cloudinary.com/dsldmzxqt/image/upload/v1737553353/Black_and_White_Gradient_Corporate_Business_Linkedin_Banner_Background_Photo_xilsqb.png",
-      },
-    },
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {profileDriver && (
@@ -73,6 +40,7 @@ export function DriverProfile() {
             profileUrl={profileDriver.profile.imageProfile.url}
             name={`${profileDriver.profile.firstname} ${profileDriver.profile.lastname}`}
             status={profileDriver.status}
+            isOwner={true}
           />
 
           <div className="container mx-auto px-4 py-8">
@@ -83,16 +51,16 @@ export function DriverProfile() {
                   languages={profileDriver.preferredLanguages}
                   rating={profileDriver.rating}
                 />
-                  <WorkSchedule />
-                <VehicleInfo />
-               
+                <WorkSchedule isOwner={true} />
+                <VehicleInfo isOwner={true} />
+
                 <ReviewsList isDriver={true} />
               </div>
 
               <div className="space-y-8">
-              
                 <PricingSettings />
                 <ContactSection
+                  isOwner={true}
                   phone={profileDriver.profile.phone}
                   address={profileDriver.profile.address}
                   social={{

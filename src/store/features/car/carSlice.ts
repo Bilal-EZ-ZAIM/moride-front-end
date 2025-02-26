@@ -2,12 +2,14 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 interface CarState {
+  carDriver: any;
   car: any;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: CarState = {
+  carDriver: null,
   car: null,
   isLoading: false,
   error: null,
@@ -49,15 +51,24 @@ export const getAllCars = createAsyncThunk("car/getAll", async () => {
 });
 
 export const getMyCar = createAsyncThunk("car/getMyCar", async () => {
+  console.log(localStorage.getItem("token"))
   const response = await axios.get(`${api}get/mycar`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
+  
   return response.data;
 });
 
-// Get single car thunk
+export const getCarByDriver = createAsyncThunk(
+  "car/getCarByDriver",
+  async (driverId: string) => {
+    const response = await axios.get(`${api}get/car/driver/${driverId}`);
+    return response.data;
+  }
+);
+
 export const getCarById = createAsyncThunk(
   "car/getOne",
   async (id: string, { rejectWithValue }) => {
@@ -81,15 +92,22 @@ export const updateCar = createAsyncThunk(
     { id, updateData }: { id: string; updateData: any },
     { rejectWithValue }
   ) => {
+    console.log("Updating car with ID:", id);
+
     try {
       const response = await axios.put(`${api}update/${id}`, updateData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
         },
       });
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      console.error("Error updating car:", error);
+
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      }
     }
   }
 );
@@ -150,11 +168,25 @@ const carSlice = createSlice({
       })
       .addCase(getMyCar.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log(action.payload.car)
+        console.log(action.payload.car);
         state.car = action.payload.car;
-        
       })
       .addCase(getMyCar.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+
+      // get car of driver
+      .addCase(getCarByDriver.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getCarByDriver.fulfilled, (state, action) => {
+        state.isLoading = false;
+        console.log(action.payload.car);
+        state.carDriver = action.payload.car;
+      })
+      .addCase(getCarByDriver.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })
@@ -178,6 +210,8 @@ const carSlice = createSlice({
         state.error = null;
       })
       .addCase(updateCar.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.car = action.payload.updatedCar;
         state.isLoading = false;
       })
       .addCase(updateCar.rejected, (state, action) => {

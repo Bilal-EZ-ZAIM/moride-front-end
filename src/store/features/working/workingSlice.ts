@@ -10,6 +10,7 @@ interface WorkingState {
   selectedWorkingHour: any | null;
   errors: any;
   working: any;
+  viewerWorkingDetails: any;
   id: string;
   DriverWorkingState: boolean;
   isLoadingFetch: boolean;
@@ -23,6 +24,7 @@ const initialState: WorkingState = {
   workingHours: [],
   profileDriver: null,
   selectedWorkingHour: null,
+  viewerWorkingDetails: null,
   errors: null,
   working: {
     monday: { start: "08:00", end: "18:00", active: false },
@@ -94,11 +96,11 @@ export const fetchDriverWorkingHours = createAsyncThunk(
   }
 );
 
-export const fetchWorkingHourById = createAsyncThunk(
-  "working/fetchById",
+export const getDriverWorkSchedule = createAsyncThunk(
+  "working/getDriverWorkSchedule",
   async (id: string, thunkAPI) => {
     try {
-      const res = await axios.get(`${api}getone/${id}`);
+      const res = await axios.get(`${api}driver/work-schedule/${id}`);
       return res.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
@@ -202,14 +204,14 @@ const WorkingSlice = createSlice({
         state.isLoadingFetch = false;
       })
 
-      .addCase(fetchWorkingHourById.pending, (state) => {
+      .addCase(getDriverWorkSchedule.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchWorkingHourById.fulfilled, (state, action) => {
+      .addCase(getDriverWorkSchedule.fulfilled, (state, action) => {
+        state.viewerWorkingDetails = action.payload.data.weekSchedule;
         state.isLoading = false;
-        state.selectedWorkingHour = action.payload;
       })
-      .addCase(fetchWorkingHourById.rejected, (state, action) => {
+      .addCase(getDriverWorkSchedule.rejected, (state, action) => {
         state.isLoading = false;
         state.errors = action.payload;
       })
