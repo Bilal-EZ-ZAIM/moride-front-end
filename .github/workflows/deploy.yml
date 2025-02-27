@@ -3,7 +3,10 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main # يتم تنفيذ النشر فقط عند الدفع إلى فرع main
+      - main  
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -16,20 +19,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20" # تحديد الإصدار الذي تستخدمه في المشروع
+          node-version: "20"
 
       - name: Install dependencies
         run: npm install
-
-      - name: Set Git user
-        run: |
-          git config --global user.email "bilalzaim499@gmail.com"
-          git config --global user.name "Bilal-EZ-ZAIM"
 
       - name: Build project
         run: npm run build
 
       - name: Deploy to GitHub Pages
         run: npm run deploy
-        env:
-          GH_TOKEN: ${{ secrets.MY_GH_TOKEN }}
