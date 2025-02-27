@@ -9,7 +9,6 @@ import {
   Trash2,
   Search,
   Car,
-  Shield,
   Filter,
   ChevronDown,
   AlertCircle,
@@ -25,93 +24,13 @@ import {
   RefreshCw,
   SortAsc,
 } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import {
+  acceptOffer,
+  fetchMyBookings,
+} from "../store/features/booking/bookingSlice";
 import { Button } from "../components/common/Button";
-// Mock data for demonstration
-const mockTrips = [
-  {
-    _id: "67bf4706922656c99a99694c",
-    from: "Marrakech",
-    to: "Youssoufia",
-    date: "2025-03-09",
-    time: "08:38",
-    passengers: 3,
-    tripType: "shared",
-    notes: "Voyage confortable avec climatisation. Petits bagages uniquement.",
-    userId: "67bf42203078d68a92341ae4",
-    profileId: {
-      _id: "67bf467f922656c99a99693d",
-      firstname: "Mohammed",
-      lastname: "Alami",
-      imageProfile: {
-        url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      },
-    },
-    priceFrom: "200",
-    priceTo: "299",
-    applicants: [
-      { _id: "app1", status: "pending", name: "Sara Khalid" },
-      { _id: "app2", status: "approved", name: "Ahmed Hassan" },
-      { _id: "app3", status: "pending", name: "Fatima Zahra" },
-      { _id: "app4", status: "pending", name: "Youssef Amrani" },
-    ],
-    createdAt: "2025-02-26T16:53:26.307Z",
-    updatedAt: "2025-02-26T16:53:26.307Z",
-    status: "active",
-  },
-  {
-    _id: "67bf4706922656c99a996123",
-    from: "Casablanca",
-    to: "Rabat",
-    date: "2025-03-15",
-    time: "10:00",
-    passengers: 2,
-    tripType: "private",
-    notes: "Trajet direct sans arrêts.",
-    userId: "67bf42203078d68a92341ae4",
-    profileId: {
-      _id: "67bf467f922656c99a99693d",
-      firstname: "Mohammed",
-      lastname: "Alami",
-      imageProfile: {
-        url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      },
-    },
-    priceFrom: "150",
-    priceTo: "200",
-    applicants: [],
-    createdAt: "2025-02-28T10:30:26.307Z",
-    updatedAt: "2025-02-28T10:30:26.307Z",
-    status: "completed",
-  },
-  {
-    _id: "67bf4706922656c99a996124",
-    from: "Agadir",
-    to: "Essaouira",
-    date: "2025-03-20",
-    time: "14:30",
-    passengers: 4,
-    tripType: "shared",
-    notes: "Voyage côtier avec vue sur l'océan. Arrêt possible à Taghazout.",
-    userId: "67bf42203078d68a92341ae4",
-    profileId: {
-      _id: "67bf467f922656c99a99693d",
-      firstname: "Mohammed",
-      lastname: "Alami",
-      imageProfile: {
-        url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      },
-    },
-    priceFrom: "250",
-    priceTo: "350",
-    applicants: [
-      { _id: "app5", status: "approved", name: "Karim Benali" },
-      { _id: "app6", status: "pending", name: "Leila Tazi" },
-    ],
-    createdAt: "2025-03-01T09:15:26.307Z",
-    updatedAt: "2025-03-01T09:15:26.307Z",
-    status: "active",
-  },
-];
+import Swal from "sweetalert2";
 
 // Badge component
 const Badge = ({ children, variant = "default", className = "" }) => {
@@ -122,25 +41,222 @@ const Badge = ({ children, variant = "default", className = "" }) => {
     danger: "bg-red-100 text-red-800",
     info: "bg-blue-100 text-blue-800",
   };
-  
+
   return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${variantStyles[variant]} ${className}`}>
+    <span
+      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${variantStyles[variant]} ${className}`}
+    >
       {children}
     </span>
   );
 };
 
-export default function MyTrips() {
+// Button component
+// const Button = ({
+//   children,
+//   variant = "default",
+//   size = "default",
+//   className = "",
+//   onClick,
+//   disabled = false,
+// }) => {
+//   const variantStyles = {
+//     default: "bg-emerald-600 hover:bg-emerald-700 text-white",
+//     outline:
+//       "bg-transparent border border-gray-300 hover:bg-gray-50 text-gray-700",
+//     ghost: "bg-transparent hover:bg-gray-50 text-gray-700",
+//   };
+
+//   const sizeStyles = {
+//     default: "px-4 py-2 text-sm",
+//     sm: "px-3 py-1.5 text-xs",
+//     lg: "px-6 py-3 text-base",
+//   };
+
+//   return (
+//     <button
+//       className={`inline-flex items-center justify-center font-medium rounded-lg transition-colors ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+//       onClick={onClick}
+//       disabled={disabled}
+//     >
+//       {children}
+//     </button>
+//   );
+// };
+
+// Sample data from the provided JSON
+const tripsDatas = [
+  {
+    _id: "67bf4706922656c99a99694c",
+    from: "marrakech",
+    to: "youssoufia",
+    date: "2025-03-09",
+    time: "08:38",
+    passengers: 3,
+    tripType: "shared",
+    notes: "Amet aut consequatu",
+    userId: "67bf42203078d68a92341ae4",
+    profileId: "67bf467f922656c99a99693d",
+    priceFrom: "200",
+    priceTo: "299",
+    applicants: [
+      {
+        status: "pending",
+        driverId: {
+          _id: "67b9218c7bd867b7845154c2",
+          rating: 0,
+          profile: {
+            _id: "67b8aa0a6992a04820c566b4",
+            firstname: "bilal",
+            lastname: "ezzaim",
+            imageProfile: {
+              url: "http://res.cloudinary.com/dsldmzxqt/image/upload/v1740237625/profile_images/ox4c0nps1lm09wmqfoel.jpg",
+              key: "profile_images/ox4c0nps1lm09wmqfoel",
+            },
+          },
+          ratings: [],
+        },
+        message: "Nouvelle demande",
+        date: "2025-02-26",
+        time: "14:30",
+        price: 150,
+        _id: "67bf55906d14b8ff005bd0f6",
+      },
+      {
+        status: "pending",
+        driverId: {
+          _id: "67ba4bd926c3592ece2a2fd7",
+          rating: 0,
+          profile: {
+            _id: "67b8aa236992a04820c566c2",
+            firstname: "Hajar",
+            lastname: "Eddyb",
+            imageProfile: {
+              url: "http://res.cloudinary.com/dsldmzxqt/image/upload/v1740328542/profile_images/rwxba59e7kwxzwepgdu9.jpg",
+              key: "profile_images/rwxba59e7kwxzwepgdu9",
+            },
+          },
+          ratings: [],
+        },
+        message: "Nouvelle demande",
+        date: "2025-02-26",
+        time: "14:30",
+        price: 150,
+        _id: "67bf55b26d14b8ff005bd100",
+      },
+    ],
+    createdAt: "2025-02-26T16:53:26.307Z",
+    updatedAt: "2025-02-26T17:56:02.243Z",
+    __v: 2,
+    status: "active", // Added for UI purposes
+  },
+  {
+    _id: "67c045a2b598a2aeda797390",
+    from: "Maârif",
+    to: "Aïn Chock",
+    date: "2025-02-27",
+    time: "08:20",
+    passengers: 2,
+    tripType: "shared",
+    notes: "Cumque atque aliqua",
+    userId: "67bf42203078d68a92341ae4",
+    profileId: "67bf467f922656c99a99693d",
+    priceFrom: "30",
+    priceTo: "48",
+    applicants: [],
+    createdAt: "2025-02-27T10:59:46.721Z",
+    updatedAt: "2025-02-27T10:59:46.721Z",
+    __v: 0,
+    status: "active", // Added for UI purposes
+  },
+  {
+    _id: "67c045e5b598a2aeda797399",
+    from: "Casablanca",
+    to: "Mohammédia",
+    date: "2025-02-28",
+    time: "16:00",
+    passengers: 1,
+    tripType: "private",
+    notes: "",
+    userId: "67bf42203078d68a92341ae4",
+    profileId: "67bf467f922656c99a99693d",
+    priceFrom: "50",
+    priceTo: "79",
+    applicants: [],
+    createdAt: "2025-02-27T11:00:53.385Z",
+    updatedAt: "2025-02-27T11:00:53.385Z",
+    __v: 0,
+    status: "completed", // Added for UI purposes
+  },
+  {
+    _id: "67c04602b598a2aeda7973b4",
+    from: "Aut id aliquid cons",
+    to: "Itaque maxime labore",
+    date: "2006-01-30",
+    time: "09:16",
+    passengers: 3,
+    tripType: "private",
+    notes: "Minim exercitation r",
+    userId: "67bf42203078d68a92341ae4",
+    profileId: "67bf467f922656c99a99693d",
+    priceFrom: "319",
+    priceTo: "824",
+    applicants: [],
+    createdAt: "2025-02-27T11:01:22.904Z",
+    updatedAt: "2025-02-27T11:01:22.904Z",
+    __v: 0,
+    status: "active", // Added for UI purposes
+  },
+  {
+    _id: "67c0464d84643d9c97e60c1c",
+    from: "Quia id aut magnam ",
+    to: "Ea quidem fugit eu ",
+    date: "1971-05-29",
+    time: "06:58",
+    passengers: 3,
+    tripType: "private",
+    notes: "Commodo doloremque q",
+    userId: "67bf42203078d68a92341ae4",
+    profileId: "67bf467f922656c99a99693d",
+    priceFrom: "230",
+    priceTo: "156",
+    applicants: [],
+    createdAt: "2025-02-27T11:02:37.423Z",
+    updatedAt: "2025-02-27T11:02:37.423Z",
+    __v: 0,
+    status: "cancelled", // Added for UI purposes
+  },
+];
+
+function MyTrips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [trips, setTrips] = useState(mockTrips);
+
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const tripsPerPage = 5;
+
+  const { myBookings, counter } = useAppSelector((state) => state.booking);
+  const dispatch = useAppDispatch();
+  const [trips, setTrips] = useState(myBookings);
+
+  console.log(counter);
+  useEffect(() => {
+    const getData = async () => {
+      await dispatch(fetchMyBookings());
+    };
+    getData();
+
+    // Update trips when myBookings changes
+    if (myBookings && myBookings.length > 0) {
+      setTrips(myBookings);
+    }
+  }, [dispatch, counter]);
+  console.log(myBookings);
 
   // Filter trips based on search term and status
   const filteredTrips = trips.filter((trip) => {
@@ -165,8 +281,8 @@ export default function MyTrips() {
       const priceB = parseInt(b.priceFrom);
       return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
     } else if (sortBy === "passengers") {
-      return sortOrder === "asc" 
-        ? a.passengers - b.passengers 
+      return sortOrder === "asc"
+        ? a.passengers - b.passengers
         : b.passengers - a.passengers;
     }
     return 0;
@@ -203,6 +319,33 @@ export default function MyTrips() {
     }
   };
 
+  const handleAccepte = (driverId: string, selectedId: string) => {
+    // Display SweetAlert confirmation window
+    Swal.fire({
+      title: "Êtes-vous sûr ?",
+      text: "Voulez-vous accepter cette offre ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Oui, accepter l'offre",
+      cancelButtonText: "Annuler",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If user confirms, dispatch the action
+        console.log(driverId);
+        console.log(selectedId);
+        dispatch(acceptOffer({ id: selectedId?._id, driverId: driverId }));
+        Swal.fire(
+          "Accepté !",
+          "L'offre a été acceptée avec succès.",
+          "success"
+        );
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // If user cancels, show cancellation message
+        Swal.fire("Annulé", "L'offre n'a pas été acceptée.", "info");
+      }
+    });
+  };
   const getStatusBadge = (status) => {
     switch (status) {
       case "active":
@@ -227,13 +370,26 @@ export default function MyTrips() {
           </Badge>
         );
       default:
-        return null;
+        return (
+          <Badge variant="success">
+            <CheckCircle2 className="w-3 h-3" />
+            Actif
+          </Badge>
+        );
     }
   };
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('fr-FR', options);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString("fr-FR", options);
+  };
+
+  // Helper function to get driver name from applicant
+  const getDriverName = (applicant) => {
+    if (applicant && applicant.driverId && applicant.driverId.profile) {
+      return `${applicant.driverId.profile.firstname} ${applicant.driverId.profile.lastname}`;
+    }
+    return "Conducteur inconnu";
   };
 
   return (
@@ -244,9 +400,12 @@ export default function MyTrips() {
         <div className="relative bg-white rounded-2xl shadow-xl p-8 border border-gray-100 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-full -mr-32 -mt-32 opacity-50"></div>
           <div className="relative">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Mes Trajets</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Mes Trajets
+            </h1>
             <p className="text-gray-600 max-w-2xl">
-              Gérez vos trajets créés et suivez les demandes de réservation. Créez de nouveaux trajets et connectez-vous avec des voyageurs.
+              Gérez vos trajets créés et suivez les demandes de réservation.
+              Créez de nouveaux trajets et connectez-vous avec des voyageurs.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button className="shadow-sm">
@@ -363,7 +522,9 @@ export default function MyTrips() {
                 Trier par date
                 <ChevronDown
                   className={`w-4 h-4 transition-transform duration-200 ${
-                    sortBy === "date" && sortOrder === "desc" ? "rotate-180" : ""
+                    sortBy === "date" && sortOrder === "desc"
+                      ? "rotate-180"
+                      : ""
                   }`}
                 />
               </button>
@@ -376,9 +537,11 @@ export default function MyTrips() {
           <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 p-4 rounded-xl border border-emerald-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-emerald-700 text-sm font-medium">Trajets actifs</p>
+                <p className="text-emerald-700 text-sm font-medium">
+                  Trajets actifs
+                </p>
                 <h3 className="text-2xl font-bold text-emerald-900 mt-1">
-                  {trips.filter(t => t.status === "active").length}
+                  {trips.filter((t) => t.status === "active").length}
                 </h3>
               </div>
               <div className="bg-emerald-200 p-3 rounded-full">
@@ -386,11 +549,13 @@ export default function MyTrips() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-700 text-sm font-medium">Demandes reçues</p>
+                <p className="text-blue-700 text-sm font-medium">
+                  Demandes reçues
+                </p>
                 <h3 className="text-2xl font-bold text-blue-900 mt-1">
                   {trips.reduce((acc, trip) => acc + trip.applicants.length, 0)}
                 </h3>
@@ -400,13 +565,20 @@ export default function MyTrips() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-700 text-sm font-medium">Revenu potentiel</p>
+                <p className="text-purple-700 text-sm font-medium">
+                  Revenu potentiel
+                </p>
                 <h3 className="text-2xl font-bold text-purple-900 mt-1">
-                  {trips.reduce((acc, trip) => acc + (Number(trip.priceFrom) * trip.passengers), 0)} MAD
+                  {trips.reduce(
+                    (acc, trip) =>
+                      acc + Number(trip.priceFrom) * trip.passengers,
+                    0
+                  )}{" "}
+                  MAD
                 </h3>
               </div>
               <div className="bg-purple-200 p-3 rounded-full">
@@ -455,7 +627,11 @@ export default function MyTrips() {
                         <div className="flex flex-col">
                           <div className="flex items-center gap-2 flex-wrap">
                             <h3 className="text-xl font-bold text-gray-900">
-                              {trip.from} <ArrowRight className="inline w-4 h-4 mx-1" /> {trip.to}
+                              {trip.from.charAt(0).toUpperCase() +
+                                trip.from.slice(1)}{" "}
+                              <ArrowRight className="inline w-4 h-4 mx-1" />{" "}
+                              {trip.to.charAt(0).toUpperCase() +
+                                trip.to.slice(1)}
                             </h3>
                             {getStatusBadge(trip.status)}
                           </div>
@@ -515,21 +691,41 @@ export default function MyTrips() {
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-600">Type:</span>
-                            <Badge variant={trip.tripType === "shared" ? "info" : "default"}>
-                              {trip.tripType === "shared" ? "Trajet partagé" : "Trajet privé"}
+                            <Badge
+                              variant={
+                                trip.tripType === "shared" ? "info" : "default"
+                              }
+                            >
+                              {trip.tripType === "shared"
+                                ? "Trajet partagé"
+                                : "Trajet privé"}
                             </Badge>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Départ:</span>
-                            <span className="text-sm font-medium">{trip.from}</span>
+                            <span className="text-sm text-gray-600">
+                              Départ:
+                            </span>
+                            <span className="text-sm font-medium">
+                              {trip.from.charAt(0).toUpperCase() +
+                                trip.from.slice(1)}
+                            </span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Destination:</span>
-                            <span className="text-sm font-medium">{trip.to}</span>
+                            <span className="text-sm text-gray-600">
+                              Destination:
+                            </span>
+                            <span className="text-sm font-medium">
+                              {trip.to.charAt(0).toUpperCase() +
+                                trip.to.slice(1)}
+                            </span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Passagers:</span>
-                            <span className="text-sm font-medium">{trip.passengers}</span>
+                            <span className="text-sm text-gray-600">
+                              Passagers:
+                            </span>
+                            <span className="text-sm font-medium">
+                              {trip.passengers}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -541,13 +737,17 @@ export default function MyTrips() {
                         </h4>
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Prix par personne:</span>
+                            <span className="text-sm text-gray-600">
+                              Prix par personne:
+                            </span>
                             <span className="font-semibold text-emerald-600">
                               {trip.priceFrom}-{trip.priceTo} MAD
                             </span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Revenu potentiel:</span>
+                            <span className="text-sm text-gray-600">
+                              Revenu potentiel:
+                            </span>
                             <span className="font-semibold text-emerald-600">
                               {Number(trip.priceFrom) * trip.passengers}-
                               {Number(trip.priceTo) * trip.passengers} MAD
@@ -593,16 +793,18 @@ export default function MyTrips() {
                                 className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100"
                               >
                                 <span className="text-sm font-medium">
-                                  {applicant.name}
+                                  {getDriverName(applicant)}
                                 </span>
                                 {applicant.status === "pending" ? (
-                                  <Badge variant="warning">
-                                    En attente
-                                  </Badge>
+                                  <Badge variant="warning">En attente</Badge>
+                                ) : applicant.status === "accepted" ? (
+                                  <Badge variant="success">Approuvé</Badge>
+                                ) : applicant.status === "rejected" ? (
+                                  <Badge variant="danger">Rejeté</Badge>
                                 ) : (
-                                  <Badge variant="success">
-                                    Approuvé
-                                  </Badge>
+                                  <Badge variant="secondary">
+                                    Statut inconnu
+                                  </Badge> // Optional: for any unexpected status
                                 )}
                               </div>
                             ))}
@@ -623,7 +825,9 @@ export default function MyTrips() {
                               Notes:
                             </h5>
                             <p className="text-sm text-gray-600 bg-white p-2 rounded-lg border border-gray-100">
-                              {trip.notes.length > 80 ? `${trip.notes.substring(0, 80)}...` : trip.notes}
+                              {trip.notes.length > 80
+                                ? `${trip.notes.substring(0, 80)}...`
+                                : trip.notes}
                             </p>
                           </div>
                         )}
@@ -638,7 +842,9 @@ export default function MyTrips() {
             {totalPages > 1 && (
               <div className="flex items-center justify-between mt-6 border-t border-gray-200 pt-4">
                 <div className="text-sm text-gray-600">
-                  Affichage de {indexOfFirstTrip + 1} à {Math.min(indexOfLastTrip, sortedTrips.length)} sur {sortedTrips.length} trajets
+                  Affichage de {indexOfFirstTrip + 1} à{" "}
+                  {Math.min(indexOfLastTrip, sortedTrips.length)} sur{" "}
+                  {sortedTrips.length} trajets
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
@@ -646,27 +852,37 @@ export default function MyTrips() {
                     size="sm"
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className={currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}
+                    className={
+                      currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                    }
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(page)}
-                      className={currentPage === page ? "bg-emerald-600" : ""}
-                    >
-                      {page}
-                    </Button>
-                  ))}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page)}
+                        className={currentPage === page ? "bg-emerald-600" : ""}
+                      >
+                        {page}
+                      </Button>
+                    )
+                  )}
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    onClick={() =>
+                      setCurrentPage(Math.min(totalPages, currentPage + 1))
+                    }
                     disabled={currentPage === totalPages}
-                    className={currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}
+                    className={
+                      currentPage === totalPages
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }
                   >
                     <ChevronRight className="w-4 h-4" />
                   </Button>
@@ -682,22 +898,28 @@ export default function MyTrips() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10">
-              <h3 className="text-xl font-bold text-gray-900">Détails du trajet</h3>
-              <button 
+              <h3 className="text-xl font-bold text-gray-900">
+                Détails du trajet
+              </h3>
+              <button
                 onClick={handleCloseModal}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
-            
+
             <div className="p-6">
               <div className="bg-gradient-to-r from-emerald-50 to-blue-50 p-4 rounded-xl mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <h2 className="text-2xl font-bold text-gray-900">
-                        {selectedTrip.from} <ArrowRight className="inline w-5 h-5 mx-1" /> {selectedTrip.to}
+                        {selectedTrip.from.charAt(0).toUpperCase() +
+                          selectedTrip.from.slice(1)}{" "}
+                        <ArrowRight className="inline w-5 h-5 mx-1" />{" "}
+                        {selectedTrip.to.charAt(0).toUpperCase() +
+                          selectedTrip.to.slice(1)}
                       </h2>
                       {getStatusBadge(selectedTrip.status)}
                     </div>
@@ -716,11 +938,13 @@ export default function MyTrips() {
                       </span>
                       <span className="inline-flex items-center gap-1">
                         <Car className="w-4 h-4" />
-                        {selectedTrip.tripType === "shared" ? "Trajet partagé" : "Trajet privé"}
+                        {selectedTrip.tripType === "shared"
+                          ? "Trajet partagé"
+                          : "Trajet privé"}
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
@@ -745,7 +969,7 @@ export default function MyTrips() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -755,43 +979,77 @@ export default function MyTrips() {
                   <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                     <dl className="space-y-4">
                       <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Départ:</dt>
-                        <dd className="text-sm text-gray-900">{selectedTrip.from}</dd>
-                      </div>
-                      <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Destination:</dt>
-                        <dd className="text-sm text-gray-900">{selectedTrip.to}</dd>
-                      </div>
-                      <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Date:</dt>
-                        <dd className="text-sm text-gray-900">{formatDate(selectedTrip.date)}</dd>
-                      </div>
-                      <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Heure:</dt>
-                        <dd className="text-sm text-gray-900">{selectedTrip.time}</dd>
-                      </div>
-                      <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Passagers:</dt>
-                        <dd className="text-sm text-gray-900">{selectedTrip.passengers}</dd>
-                      </div>
-                      <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Type de trajet:</dt>
+                        <dt className="text-sm font-medium text-gray-600">
+                          Départ:
+                        </dt>
                         <dd className="text-sm text-gray-900">
-                          {selectedTrip.tripType === "shared" ? "Trajet partagé" : "Trajet privé"}
+                          {selectedTrip.from.charAt(0).toUpperCase() +
+                            selectedTrip.from.slice(1)}
                         </dd>
                       </div>
                       <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Statut:</dt>
-                        <dd className="text-sm text-gray-900">{getStatusBadge(selectedTrip.status)}</dd>
+                        <dt className="text-sm font-medium text-gray-600">
+                          Destination:
+                        </dt>
+                        <dd className="text-sm text-gray-900">
+                          {selectedTrip.to.charAt(0).toUpperCase() +
+                            selectedTrip.to.slice(1)}
+                        </dd>
                       </div>
                       <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Créé le:</dt>
-                        <dd className="text-sm text-gray-900">{formatDate(selectedTrip.createdAt)}</dd>
+                        <dt className="text-sm font-medium text-gray-600">
+                          Date:
+                        </dt>
+                        <dd className="text-sm text-gray-900">
+                          {formatDate(selectedTrip.date)}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-sm font-medium text-gray-600">
+                          Heure:
+                        </dt>
+                        <dd className="text-sm text-gray-900">
+                          {selectedTrip.time}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-sm font-medium text-gray-600">
+                          Passagers:
+                        </dt>
+                        <dd className="text-sm text-gray-900">
+                          {selectedTrip.passengers}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-sm font-medium text-gray-600">
+                          Type de trajet:
+                        </dt>
+                        <dd className="text-sm text-gray-900">
+                          {selectedTrip.tripType === "shared"
+                            ? "Trajet partagé"
+                            : "Trajet privé"}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-sm font-medium text-gray-600">
+                          Statut:
+                        </dt>
+                        <dd className="text-sm text-gray-900">
+                          {getStatusBadge(selectedTrip.status)}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-sm font-medium text-gray-600">
+                          Créé le:
+                        </dt>
+                        <dd className="text-sm text-gray-900">
+                          {formatDate(selectedTrip.createdAt)}
+                        </dd>
                       </div>
                     </dl>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <DollarSign className="w-5 h-5 mr-2 text-emerald-600" />
@@ -800,21 +1058,29 @@ export default function MyTrips() {
                   <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mb-4">
                     <dl className="space-y-4">
                       <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Prix par personne:</dt>
+                        <dt className="text-sm font-medium text-gray-600">
+                          Prix par personne:
+                        </dt>
                         <dd className="text-sm font-semibold text-emerald-600">
                           {selectedTrip.priceFrom}-{selectedTrip.priceTo} MAD
                         </dd>
                       </div>
                       <div className="flex justify-between">
-                        <dt className="text-sm font-medium text-gray-600">Revenu potentiel:</dt>
+                        <dt className="text-sm font-medium text-gray-600">
+                          Revenu potentiel:
+                        </dt>
                         <dd className="text-sm font-semibold text-emerald-600">
-                          {Number(selectedTrip.priceFrom) * selectedTrip.passengers}-
-                          {Number(selectedTrip.priceTo) * selectedTrip.passengers} MAD
+                          {Number(selectedTrip.priceFrom) *
+                            selectedTrip.passengers}
+                          -
+                          {Number(selectedTrip.priceTo) *
+                            selectedTrip.passengers}{" "}
+                          MAD
                         </dd>
                       </div>
                     </dl>
                   </div>
-                  
+
                   {selectedTrip.notes && (
                     <div>
                       <h5 className="text-md font-medium text-gray-900 mb-2 flex items-center">
@@ -822,54 +1088,90 @@ export default function MyTrips() {
                         Notes
                       </h5>
                       <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                        <p className="text-sm text-gray-700">{selectedTrip.notes}</p>
+                        <p className="text-sm text-gray-700">
+                          {selectedTrip.notes}
+                        </p>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
-              
+
               <div>
                 <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <UserCheck className="w-5 h-5 mr-2 text-emerald-600" />
                   Demandes de réservation ({selectedTrip.applicants.length})
                 </h4>
-                
+
                 {selectedTrip.applicants.length === 0 ? (
                   <div className="bg-gray-50 rounded-xl p-8 border border-dashed border-gray-200 text-center">
-                    <p className="text-gray-500">Aucune demande de réservation pour ce trajet</p>
+                    <p className="text-gray-500">
+                      Aucune demande de réservation pour ce trajet
+                    </p>
                   </div>
                 ) : (
                   <div className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-                    <div className="grid grid-cols-3 gap-4 p-4 border-b border-gray-200 bg-gray-100">
-                      <div className="text-sm font-medium text-gray-700">Voyageur</div>
-                      <div className="text-sm font-medium text-gray-700">Statut</div>
-                      <div className="text-sm font-medium text-gray-700">Actions</div>
+                    <div className="grid grid-cols-3 gap-4 p-4 border-b border- gray-200 bg-gray-100">
+                      <div className="text-sm font-medium text-gray-700">
+                        Conducteur
+                      </div>
+                      <div className="text-sm font-medium text-gray-700">
+                        Statut
+                      </div>
+                      <div className="text-sm font-medium text-gray-700">
+                        Actions
+                      </div>
                     </div>
-                    
+
                     <div className="divide-y divide-gray-200">
                       {selectedTrip.applicants.map((applicant) => (
-                        <div key={applicant._id} className="grid grid-cols-3 gap-4 p-4 items-center">
-                          <div className="text-sm font-medium">{applicant.name}</div>
+                        <div
+                          key={applicant._id}
+                          className="grid grid-cols-3 gap-4 p-4 items-center"
+                        >
+                          <div className="text-sm font-medium">
+                            {getDriverName(applicant)}
+                          </div>
                           <div>
                             {applicant.status === "pending" ? (
                               <Badge variant="warning">En attente</Badge>
-                            ) : (
+                            ) : applicant.status === "accepted" ? (
                               <Badge variant="success">Approuvé</Badge>
+                            ) : applicant.status === "rejected" ? (
+                              <Badge variant="danger">Rejeté</Badge>
+                            ) : (
+                              <Badge variant="secondary">Statut inconnu</Badge> // Optional: for any unexpected status
                             )}
                           </div>
                           <div className="flex items-center gap-2">
                             {applicant.status === "pending" ? (
                               <>
-                                <Button size="sm" className="text-xs">
+                                <Button
+                                  size="sm"
+                                  className="text-xs z-50"
+                                  onClick={() =>
+                                    handleAccepte(
+                                      applicant.driverId._id,
+                                      selectedTrip
+                                    )
+                                  }
+                                >
                                   Approuver
                                 </Button>
-                                <Button variant="outline" size="sm" className="text-xs text-red-600 border-red-200 hover:bg-red-50">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-xs text-red-600 border-red-200 hover:bg-red-50"
+                                >
                                   Refuser
                                 </Button>
                               </>
                             ) : (
-                              <Button variant="outline" size="sm" className="text-xs">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-xs"
+                              >
                                 Contacter
                               </Button>
                             )}
@@ -881,7 +1183,7 @@ export default function MyTrips() {
                 )}
               </div>
             </div>
-            
+
             <div className="border-t border-gray-200 p-4 flex justify-end">
               <Button variant="outline" onClick={handleCloseModal}>
                 Fermer
@@ -893,3 +1195,5 @@ export default function MyTrips() {
     </div>
   );
 }
+
+export default MyTrips;

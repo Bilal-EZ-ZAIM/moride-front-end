@@ -1,4 +1,3 @@
-import React from 'react';
 import { BookingForm } from '../components/booking/BookingForm';
 import { DriverResponses } from '../components/booking/DriverResponses';
 import { Car } from 'lucide-react';

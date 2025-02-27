@@ -43,7 +43,7 @@ export function App() {
           <Route index element={<Home />} />
           <Route path="drivers" element={<DriversListing />} />
           <Route path="/MyTrips" element={<MyTrips />} />
-          <Route path="tripDetails" element={<TripDetails />} />
+          <Route path="/tripDetails/:id" element={<TripDetails />} />
           <Route path="bookings" element={<TripOffers />} />
           <Route path="bookTrip" element={<BookTrip />} />
           <Route path="driver" element={<DriverProfile />} />

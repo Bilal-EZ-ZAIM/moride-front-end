@@ -8,6 +8,8 @@ interface BookingState {
   myBookings: any;
   loading: boolean;
   error: string | null;
+  booking: any;
+  counter: number;
 }
 
 const initialState: BookingState = {
@@ -15,6 +17,8 @@ const initialState: BookingState = {
   myBookings: [],
   loading: false,
   error: null,
+  booking: null,
+  counter: 1,
 };
 
 export const fetchBookings = createAsyncThunk(
@@ -29,12 +33,28 @@ export const fetchBookings = createAsyncThunk(
   }
 );
 
+export const fetchBookingById = createAsyncThunk(
+  "booking/fetchBookingById",
+  async (id: any, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Error fetching bookings");
+    }
+  }
+);
+
 export const fetchMyBookings = createAsyncThunk(
   "booking/fetchMyBookings",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_URL}/my-booking`, {
         withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.data;
     } catch (error: any) {
@@ -63,6 +83,53 @@ export const createBooking = createAsyncThunk(
   }
 );
 
+export const postule = createAsyncThunk(
+  "booking/postule",
+  async ({ id, data }: any, thunkAPI) => {
+    try {
+      const res = await axios.patch(`${API_URL}/${id}/apply`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+      return res.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);
+
+export const acceptOffer = createAsyncThunk(
+  "booking/acceptOffer",
+  async (
+    { id, driverId }: { id: string; driverId: any },
+    { rejectWithValue }
+  ) => {
+    console.log(driverId);
+    try {
+      const response = await axios.patch(
+        `${API_URL}/${id}/accepter`,
+        { driverId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Error accepting offer"
+      );
+    }
+  }
+);
+
 const bookingSlice = createSlice({
   name: "booking",
   initialState,
@@ -76,10 +143,25 @@ const bookingSlice = createSlice({
       .addCase(fetchBookings.fulfilled, (state, action: PayloadAction) => {
         state.loading = false;
         state.bookings = action.payload;
-        
-        console.log(action.payload)
+
+        console.log(action.payload);
       })
       .addCase(fetchBookings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(fetchBookingById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBookingById.fulfilled, (state, action: PayloadAction) => {
+        state.loading = false;
+        state.booking = action.payload;
+
+        console.log(action.payload);
+      })
+      .addCase(fetchBookingById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -108,6 +190,33 @@ const bookingSlice = createSlice({
       .addCase(createBooking.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      .addCase(postule.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postule.fulfilled, (state, action: PayloadAction) => {
+        state.loading = false;
+      })
+      .addCase(postule.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        console.log(action.payload);
+      })
+
+      .addCase(acceptOffer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(acceptOffer.fulfilled, (state, action: PayloadAction) => {
+        state.loading = false;
+        state.counter += 1;
+      })
+      .addCase(acceptOffer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        console.log(action.payload);
       });
   },
 });

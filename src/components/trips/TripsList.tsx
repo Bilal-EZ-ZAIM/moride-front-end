@@ -32,8 +32,8 @@ export function TripsList() {
 
   const filteredTrips = bookings?.filter(
     (trip: any) =>
-      trip.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      trip.to.toLowerCase().includes(searchTerm.toLowerCase())
+      trip?.from?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      trip?.to?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -152,7 +152,7 @@ export function TripsList() {
                         {trip.priceFrom}-{trip.priceTo} MAD
                       </div>
                     </div>
-                    <Link to={`/trips/${trip.id}`}>
+                    <Link to={`/tripDetails/${trip._id}`}>
                       <Button className="flex items-center gap-2 px-8 py-3 text-base group-hover:bg-emerald-700 transition-colors duration-300">
                         Réserver
                         <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />

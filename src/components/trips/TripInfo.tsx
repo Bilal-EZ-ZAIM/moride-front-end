@@ -1,25 +1,57 @@
-import React, { useState } from 'react';
-import { MapPin, Calendar, Clock, Users, DollarSign, Car, Shield, Route, Info } from 'lucide-react';
-import { Button } from '../common/Button';
-import { DriverApplicationModal } from './DriverApplicationModal';
+import React, { useState } from "react";
+import {
+  MapPin,
+  Calendar,
+  Clock,
+  Users,
+  DollarSign,
+  Car,
+  Shield,
+  Route,
+  Info,
+} from "lucide-react";
+import { Button } from "../common/Button";
+import { DriverApplicationModal } from "./DriverApplicationModal";
+import { postule } from "../../store/features/booking/bookingSlice";
+import Swal from "sweetalert2";
+import { useAppDispatch } from "../../hooks";
 
-export function TripInfo() {
+export function TripInfo({ booking }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const handleApplicationSubmit = (data: {
+  console.log(booking);
+  const handleApplicationSubmit = async (data: {
     price: number;
     time: string;
     message: string;
   }) => {
-    console.log('Application submitted:', data);
-    // Here you would typically send this data to your backend
-  };
+    try {
+      await dispatch(postule({ id: booking?._id, data })).unwrap();
 
+      Swal.fire({
+        title: "Succès!",
+        text: "Votre candidature a été envoyée avec succès.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (error: any) {
+      console.log(error);
+      Swal.fire({
+        title: "Erreur!",
+        text: error,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
   return (
     <>
       <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">Détails du Trajet</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Détails du Trajet
+          </h2>
           <span className="px-4 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium">
             Trajet Disponible
           </span>
@@ -34,16 +66,20 @@ export function TripInfo() {
                   <MapPin className="w-6 h-6 text-emerald-600" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-500 mb-1">Départ</div>
-                  <div className="font-semibold text-gray-900 text-lg">Casablanca, Maârif</div>
+                  <div className="text-sm font-medium text-gray-500 mb-1">
+                    Départ
+                  </div>
+                  <div className="font-semibold text-gray-900 text-lg">
+                    {booking?.from}
+                  </div>
                   <div className="flex items-center gap-3 mt-2">
                     <div className="flex items-center gap-1.5 text-sm text-gray-600">
                       <Calendar className="w-4 h-4" />
-                      20 Mars 2024
+                      {booking?.date}
                     </div>
                     <div className="flex items-center gap-1.5 text-sm text-gray-600">
                       <Clock className="w-4 h-4" />
-                      14:00
+                      {booking?.time}
                     </div>
                   </div>
                 </div>
@@ -54,11 +90,17 @@ export function TripInfo() {
                   <MapPin className="w-6 h-6 text-emerald-600" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-500 mb-1">Arrivée</div>
-                  <div className="font-semibold text-gray-900 text-lg">Rabat, Agdal</div>
+                  <div className="text-sm font-medium text-gray-500 mb-1">
+                    Arrivée
+                  </div>
+                  <div className="font-semibold text-gray-900 text-lg">
+                    {booking?.to}
+                  </div>
                   <div className="flex items-center gap-2 mt-2">
                     <Route className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">Distance estimée: 87 km</span>
+                    <span className="text-sm text-gray-600">
+                      Distance estimée: 87 km
+                    </span>
                   </div>
                 </div>
               </div>
@@ -73,17 +115,9 @@ export function TripInfo() {
             </div>
             <div>
               <div className="text-sm text-blue-600 font-medium">Passagers</div>
-              <div className="text-lg font-semibold text-blue-700">2 personnes</div>
-            </div>
-          </div>
-
-          <div className="bg-purple-50 rounded-xl p-4 flex items-center gap-3">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Car className="w-5 h-5 text-purple-600" />
-            </div>
-            <div>
-              <div className="text-sm text-purple-600 font-medium">Type de véhicule</div>
-              <div className="text-lg font-semibold text-purple-700">Berline ou SUV</div>
+              <div className="text-lg font-semibold text-blue-700">
+                {booking?.passengers} personnes
+              </div>
             </div>
           </div>
 
@@ -92,8 +126,12 @@ export function TripInfo() {
               <DollarSign className="w-5 h-5 text-emerald-600" />
             </div>
             <div>
-              <div className="text-sm text-emerald-600 font-medium">Budget client</div>
-              <div className="text-lg font-semibold text-emerald-700">400-500 MAD</div>
+              <div className="text-sm text-emerald-600 font-medium">
+                Budget client
+              </div>
+              <div className="text-lg font-semibold text-emerald-700">
+                {booking?.priceFrom}-{booking?.priceTo} MAD
+              </div>
             </div>
           </div>
         </div>
@@ -103,10 +141,13 @@ export function TripInfo() {
             <Info className="w-5 h-5 text-amber-600" />
           </div>
           <div>
-            <div className="text-sm text-amber-600 font-medium mb-1">Information importante</div>
+            <div className="text-sm text-amber-600 font-medium mb-1">
+              Information importante
+            </div>
             <div className="text-sm text-amber-700">
-              En tant que chauffeur, vous devez avoir une voiture confortable et propre, 
-              être ponctuel et professionnel. Votre véhicule doit être climatisé et en parfait état.
+              En tant que chauffeur, vous devez avoir une voiture confortable et
+              propre, être ponctuel et professionnel. Votre véhicule doit être
+              climatisé et en parfait état.
             </div>
           </div>
         </div>
@@ -118,7 +159,7 @@ export function TripInfo() {
               Course sécurisée et vérifiée
             </span>
           </div>
-          <Button 
+          <Button
             onClick={() => setIsModalOpen(true)}
             className="px-8 py-3 text-base flex items-center gap-2 hover:bg-emerald-700 transition-colors duration-300"
           >

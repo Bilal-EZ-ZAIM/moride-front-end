@@ -1,7 +1,5 @@
-import React from "react";
 import { TripsList } from "../components/trips/TripsList";
 import { TripsFilters } from "../components/trips/TripsFilters";
-import { fetchBookings } from "../store/features/booking/bookingSlice";
 import { useAppSelector } from "../hooks";
 
 export function TripOffers() {
