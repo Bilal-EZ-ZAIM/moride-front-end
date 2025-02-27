@@ -3,10 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - develop 
+      - develop  # يتم تنفيذ النشر عندما يتم الدفع إلى فرع develop
   pull_request:
+    types: [closed]  # يتم تنفيذ النشر عندما يتم إغلاق (دمج) PR إلى فرع develop
     branches:
-      - develop 
+      - develop
 
 jobs:
   build:
@@ -30,5 +31,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
-          branch: gh-pages
-          folder: dist
+          branch: gh-pages  # نشر إلى فرع gh-pages
+          folder: dist      # المجلد الذي يحتوي على الملفات المبنية
