@@ -37,7 +37,7 @@ export function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/moride-front-end">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
