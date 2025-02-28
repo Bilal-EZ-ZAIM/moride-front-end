@@ -1,27 +1,26 @@
-import React from "react";
 import { Button } from "../common/Button";
 import { useAppDispatch } from "../../hooks";
 import { useNavigate } from "react-router-dom";
+const apiUrl: string = import.meta.env.VITE_API_URL;
+const api: string = `${apiUrl}/auth/`;
 
 export function SocialAuth() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const loginByGoogleFront = () => {
-    const googleLoginUrl =
-      "https://api-moride-git-main-bilanox1s-projects.vercel.app/api/v1/auth/google/login";
+    const googleLoginUrl = `${api}google/login`;
 
     window.location.href = googleLoginUrl;
 
     window.addEventListener("message", (event) => {
-      if (event.origin !== "http://localhost:3000") return;
+      if (event.origin !== apiUrl) return;
 
       const { token } = event.data;
       console.log("Received token from server:", token);
 
       if (token) {
         dispatch({ type: "auth/setToken", payload: token });
-        navigate("/dashboard");
       }
     });
   };

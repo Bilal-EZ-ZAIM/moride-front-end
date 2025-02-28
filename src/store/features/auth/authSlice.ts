@@ -3,8 +3,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosResponse } from "axios";
 import { LoginIntrface } from "../../../interface/loginInterface";
 import { RegisterIntrface } from "../../../interface/registerInterface";
-const api: string =
-  "https://api-moride-git-main-bilanox1s-projects.vercel.app/api/v1/auth/";
+const apiUrl: string = import.meta.env.VITE_API_URL;
+const api: string = `${apiUrl}/auth/`;
 
 // const api: string = "http://localhost:3000/api/v1/auth/";
 
@@ -145,16 +145,12 @@ export const updatePassword = createAsyncThunk(
     const token = localStorage.getItem("token");
 
     try {
-      const res = await axios.put(
-        "http://localhost:3000/api/v1/auth/restPassword",
-        updatePass,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.put(`${api}restPassword`, updatePass, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log("Response:", res.data);
       return res.data;
     } catch (error: any) {

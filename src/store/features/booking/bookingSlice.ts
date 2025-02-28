@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/v1/booking";
+const apiUrl: string = import.meta.env.VITE_API_URL;
+const API_URL = `${apiUrl}/booking/`;
 const token = localStorage.getItem("token");
 interface BookingState {
   bookings: any;

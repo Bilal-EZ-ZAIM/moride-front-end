@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const api: string = "http://localhost:3000/api/v1/working-hours/";
+const apiUrl: string = import.meta.env.VITE_API_URL;
+const api: string = `${apiUrl}/working-hours/`;
 const token = localStorage.getItem("token");
 interface WorkingState {
   isLoading: boolean;
@@ -81,12 +82,9 @@ export const fetchDriverWorkingHours = createAsyncThunk(
     console.log("=====================");
     console.log(token);
     try {
-      const res = await axios.get(
-        `http://localhost:3000/api/v1/working-hours/driver`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await axios.get(`${api}driver`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       return res.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
@@ -119,7 +117,7 @@ export const updateWorkingHours = createAsyncThunk(
 
     try {
       const res = await axios.patch(
-        `http://localhost:3000/api/v1/working-hours/${id}`,
+        `${api}${id}`,
         data,
         {
           headers: {

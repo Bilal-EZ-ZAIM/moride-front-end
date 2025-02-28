@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
-const api: string = "http://localhost:3000/api/v1/driver/";
+const apiUrl: string = import.meta.env.VITE_API_URL;
+const api: string = `${apiUrl}/driver/`;
 const token = localStorage.getItem("token");
 
 interface DriverState {

@@ -15,23 +15,20 @@ const initialState: CarState = {
   error: null,
 };
 
-const api = "http://localhost:3000/api/v1/car/";
+const apiUrl: string = import.meta.env.VITE_API_URL;
+const api: string = `${apiUrl}/car/`;
 
 // Create car thunk
 export const createCar = createAsyncThunk(
   "car/create",
   async (carData: any, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/car/create",
-        carData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${api}create`, carData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return response.data;
     } catch (error: any) {
@@ -51,13 +48,13 @@ export const getAllCars = createAsyncThunk("car/getAll", async () => {
 });
 
 export const getMyCar = createAsyncThunk("car/getMyCar", async () => {
-  console.log(localStorage.getItem("token"))
+  console.log(localStorage.getItem("token"));
   const response = await axios.get(`${api}get/mycar`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
-  
+
   return response.data;
 });
 

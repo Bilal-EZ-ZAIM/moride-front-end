@@ -4,7 +4,9 @@ import axios from "axios";
 import { ProfielIntrface } from "../../../interface/profileInterface";
 
 //const api: string = "https://backend-moride-git-main-bilanox1s-projects.vercel.app/api/v1/profile/";
-const api: string = "http://localhost:3000/api/v1/profile/";
+
+const apiUrl: string = import.meta.env.VITE_API_URL;
+const api: string = `${apiUrl}/profile/`;
 
 // const api: string = "https://sportfy.onrender.com";
 
