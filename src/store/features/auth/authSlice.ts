@@ -3,9 +3,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosResponse } from "axios";
 import { LoginIntrface } from "../../../interface/loginInterface";
 import { RegisterIntrface } from "../../../interface/registerInterface";
-// const api: string = "https://backend-moride-git-main-bilanox1s-projects.vercel.app/api/v1/auth/";
+const api: string =
+  "https://api-moride-git-main-bilanox1s-projects.vercel.app/api/v1/auth/";
 
-const api: string = "http://localhost:3000/api/v1/auth/";
+// const api: string = "http://localhost:3000/api/v1/auth/";
 
 interface AuthState {
   isLoading: boolean;
