@@ -12,12 +12,12 @@ import {
   Lock,
   Home,
   Calendar,
-  CreditCard,
   Users,
   PlusCircle,
   Search,
   History,
-  Wallet,
+  LogIn,
+  UserPlus,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { getProfile } from "../../store/features/profile/profileSlice";
@@ -27,7 +27,7 @@ export function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   // Mock data - replace with actual data from your state management
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, isLogin } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,8 +52,44 @@ export function Header() {
   console.log(user);
 
   // Navigation items with clearer labels and better organization
-  const mainNavItems = isDriver
-    ? [
+  const getNavItems = () => {
+    if (!isLogin) {
+      return [
+        {
+          path: "/",
+          label: "Accueil",
+          icon: Home,
+          description: "Page d'accueil",
+        },
+        {
+          path: "/bookTrip",
+          label: "Réserver",
+          icon: PlusCircle,
+          description: "Réserver un trajet",
+        },
+        {
+          path: "/drivers",
+          label: "Chauffeurs",
+          icon: Users,
+          description: "Trouver un chauffeur",
+        },
+        {
+          path: "/login",
+          label: "Se connecter",
+          icon: LogIn,
+          description: "Se connecter à votre compte",
+        },
+        {
+          path: "/register",
+          label: "S'inscrire",
+          icon: UserPlus,
+          description: "Créer un compte",
+        },
+      ];
+    }
+
+    if (isDriver) {
+      return [
         {
           path: "/",
           label: "Accueil",
@@ -67,7 +103,7 @@ export function Header() {
           description: "Trouver des passagers",
         },
         {
-          path: "MyTrips",
+          path: "/myTrips",
           label: "Mes trajets",
           icon: History,
           description: "Historique des courses",
@@ -78,39 +114,38 @@ export function Header() {
           icon: PlusCircle,
           description: "Réserver un trajet",
         },
-      ]
-    : [
-        {
-          path: "/",
-          label: "Accueil",
-          icon: Home,
-          description: "Page d'accueil",
-        },
-        {
-          path: "/bookTrip",
-          label: "Réserver",
-          icon: PlusCircle,
-          description: "Réserver un trajet",
-        },
-        {
-          path: "/myTrips",
-          label: "Mes réservations",
-          icon: Calendar,
-          description: "Gérer vos réservations",
-        },
-        {
-          path: "/drivers",
-          label: "Chauffeurs",
-          icon: Users,
-          description: "Trouver un chauffeur",
-        },
-        // {
-        //   path: "/payments",
-        //   label: "Paiements",
-        //   icon: CreditCard,
-        //   description: "Gérer vos paiements",
-        // },
       ];
+    }
+
+    return [
+      {
+        path: "/",
+        label: "Accueil",
+        icon: Home,
+        description: "Page d'accueil",
+      },
+      {
+        path: "/bookTrip",
+        label: "Réserver",
+        icon: PlusCircle,
+        description: "Réserver un trajet",
+      },
+      {
+        path: "/myTrips",
+        label: "Mes réservations",
+        icon: Calendar,
+        description: "Gérer vos réservations",
+      },
+      {
+        path: "/drivers",
+        label: "Chauffeurs",
+        icon: Users,
+        description: "Trouver un chauffeur",
+      },
+    ];
+  };
+
+  const mainNavItems = getNavItems();
 
   return (
     <header className="w-full sticky top-0 bg-white/95 backdrop-blur-sm z-50 shadow-sm py-2">
@@ -206,18 +241,22 @@ export function Header() {
                     </span>
                   </div>
                 ) : (
-                  <Link
-                    to="/create/profile"
-                    className="text-emerald-600 hover:text-emerald-700 font-medium"
-                  >
-                    Compléter mon profil
-                  </Link>
+                  isLogin && (
+                    <Link
+                      to="/create/profile"
+                      className="text-emerald-600 hover:text-emerald-700 font-medium"
+                    >
+                      Compléter mon profil
+                    </Link>
+                  )
                 )}
-                <ChevronDown
-                  className={`w-4 h-4 text-gray-600 transition-transform ${
-                    isProfileOpen ? "rotate-180" : ""
-                  }`}
-                />
+                {isLogin && (
+                  <ChevronDown
+                    className={`w-4 h-4 text-gray-600 transition-transform ${
+                      isProfileOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                )}
               </button>
 
               {profile && isProfileOpen && (
@@ -273,7 +312,7 @@ export function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden mt-4 space-y-3 pb-4 border-t border-gray-100 pt-4 animate-fadeIn">
+          <div className="lg:hidden mt-4 space-y-3 pb-4 border-t border-gray-100 pt-4 animate-fadeIn overflow-scroll h-screen">
             {/* Mobile Navigation Items */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {mainNavItems.map((item) => {

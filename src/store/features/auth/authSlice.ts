@@ -44,14 +44,12 @@ const initialState: AuthState = {
 export const registers = createAsyncThunk(
   "auth/register",
   async (data: RegisterIntrface, thunkAPI) => {
-
     try {
       const res: AxiosResponse = await axios.post(api + "register", data, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-
 
       return res.data;
     } catch (error: any) {
@@ -73,7 +71,6 @@ export const login = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-
 
       return res.data;
     } catch (error: any) {
@@ -101,7 +98,6 @@ export const verifyOtp = createAsyncThunk(
           },
         }
       );
-
 
       return res.data;
     } catch (error: any) {
@@ -205,7 +201,6 @@ export const isLogins = createAsyncThunk(
         },
       });
 
-
       return res.data;
     } catch (error: any) {
       console.error(
@@ -279,14 +274,15 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.status = false;
         state.error = null;
+        state.isLogin = false;
       })
       .addCase(login.fulfilled, (state, action: any) => {
         console.log("is fulfilled");
         state.isLoading = false;
         state.user = action.payload;
-        console.log("User logged in successfully:", action.payload);
         state.token = action.payload.token;
         state.error = null;
+        state.isLogin = true;
         state.status = true;
         localStorage.setItem("token", action.payload.token);
         console.log(state.token);
@@ -359,12 +355,12 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.token = action.payload.token;
         state.error = null;
+        state.isLogin = true;
         state.status = true;
         localStorage.setItem("token", action.payload);
       })
       .addCase(updatePassword.rejected, (state, action: any) => {
         state.status = false;
-
         state.isLoading = false;
         console.log(action.payload);
         state.msgErrUpPwd = action.payload.response.message;
