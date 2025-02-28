@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://bilal-ez-zaim.github.io/moride-front-end/",
+  "homepage": "https://bilal-ez-zaim.github.io",
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
     "axios": "^1.7.9",
