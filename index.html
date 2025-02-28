@@ -5,14 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Moride</title>
-    <script type="module" crossorigin src="./assets/index-Cv3BCHE4.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CdWOgPxw.css">
+    <script type="module" crossorigin src="/moride-front-end/assets/index-Cv3BCHE4.js"></script>
+    <link rel="stylesheet" crossorigin href="/moride-front-end/assets/index-CdWOgPxw.css">
   </head>
   <body>
     <div id="root"></div>
     <script>
-      var path = window.location.pathname;
-      window.location.replace('/moride-front-end/' + path);
+      var path = window.location.pathname.replace('/moride-front-end/', '');
+      window.location.replace('/moride-front-end/index.html?redirect=' + path);
   </script>
   </body>
 </html>
