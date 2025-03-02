@@ -130,6 +130,7 @@ const profileSlice = createSlice({
       .addCase(createProfile.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.profile = action.payload;
+        console.log(action.payload);
         state.erros = null;
       })
       .addCase(createProfile.rejected, (state, action: any) => {

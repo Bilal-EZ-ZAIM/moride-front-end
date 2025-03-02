@@ -35,7 +35,7 @@ export function Header() {
 
   useEffect(() => {
     dispatch(getProfile());
-  }, [counter, dispatch]);
+  }, [counter]);
 
   const isAuthPage = ["/login", "/register", "/reset-password"].includes(
     location.pathname
