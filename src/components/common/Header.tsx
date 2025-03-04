@@ -415,39 +415,34 @@ export function Header() {
 
             {/* Mobile User Info */}
 
-            <button
-              className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded-lg transition-colors"
-            >
-              {profile ? (
-                <div className="flex items-center gap-2">
-                  <img
-                    src={profile?.imageProfile?.url}
-                    alt={user?.name || "User"}
-                    className="w-8 h-8 rounded-full object-cover border-2 border-emerald-600"
-                  />
-                  <span className="hidden sm:inline-block text-sm font-medium text-gray-700">
-                    {user?.name}
-                  </span>
-                </div>
-              ) : (
-                isLogin && (
-                  <Link
-                    to="/create/profile"
-                    className="text-emerald-600 hover:text-emerald-700 font-medium"
-                  >
-                    Compléter mon profil
-                  </Link>
-                )
-              )}
-              {isLogin && (
-                <ChevronDown
-                  className={`w-4 h-4 text-gray-600 transition-transform ${
-                    isProfileOpen ? "rotate-180" : ""
-                  }`}
+            {profile ? (
+              <div className="flex items-center gap-2">
+                <img
+                  src={profile?.imageProfile?.url}
+                  alt={user?.name || "User"}
+                  className="w-8 h-8 rounded-full object-cover border-2 border-emerald-600"
                 />
-              )}
-            </button>
-           
+                <span className="hidden sm:inline-block text-sm font-medium text-gray-700">
+                  {user?.name}
+                </span>
+              </div>
+            ) : (
+              isLogin && (
+                <Link
+                  to="/create/profile"
+                  className="text-emerald-600 hover:text-emerald-700 font-medium"
+                >
+                  Compléter mon profil
+                </Link>
+              )
+            )}
+            {isLogin && (
+              <ChevronDown
+                className={`w-4 h-4 text-gray-600 transition-transform ${
+                  isProfileOpen ? "rotate-180" : ""
+                }`}
+              />
+            )}
           </div>
         )}
       </nav>
