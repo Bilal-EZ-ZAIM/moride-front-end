@@ -34,7 +34,8 @@ interface BookingFormData {
 
 export function BookingForm() {
   const { isLoading, id } = useAppSelector((state) => state.profile);
-  console.log(id)
+  const { isLogin } = useAppSelector((state) => state.auth);
+  console.log(id);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const {
@@ -58,9 +59,19 @@ export function BookingForm() {
     },
   });
 
-  const tripType = watch("tripType");
-
   const onSubmit = async (data: BookingFormData) => {
+    if (isLogin) {
+      if (!id) {
+        await Swal.fire({
+          icon: "warning",
+          title: "Aucun profil trouvé",
+          text: "Vous devez créer un profil avant de réserver un trajet.",
+          confirmButtonColor: "#059669",
+        });
+        navigate("/create/profile");
+        return;
+      }
+    }
     try {
       // Show loading state
       Swal.fire({
@@ -73,7 +84,7 @@ export function BookingForm() {
       });
 
       // Dispatch the action
-      console.log(data)
+      console.log(data);
       await dispatch(createBooking(data)).unwrap();
 
       // Show success message
@@ -87,14 +98,34 @@ export function BookingForm() {
       // Reset form and navigate
       reset();
       navigate("/bookings");
-    } catch (error) {
+    } catch (error: any) {
       // Show error message
-      Swal.fire({
-        icon: "error",
-        title: "Erreur",
-        text: "Une erreur est survenue lors de la création de la réservation.",
-        confirmButtonColor: "#059669",
-      });
+      console.log(error);
+
+      // Check if the error is related to JWT authentication
+      if (error?.message === "jwt malformed" && error?.statusCode === 401) {
+        await Swal.fire({
+          icon: "error",
+          title: "Erreur d'authentification",
+          text: "Vous devez vous connecter pour créer une réservation.",
+          showCancelButton: true,
+          confirmButtonText: "Se connecter",
+          cancelButtonText: "Annuler",
+          confirmButtonColor: "#059669",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Navigate to login page if user confirms
+            navigate("/login");
+          }
+        });
+      } else {
+        await Swal.fire({
+          icon: "error",
+          title: "Erreur",
+          text: "Une erreur est survenue lors de la création de la réservation.",
+          confirmButtonColor: "#059669",
+        });
+      }
     }
   };
 

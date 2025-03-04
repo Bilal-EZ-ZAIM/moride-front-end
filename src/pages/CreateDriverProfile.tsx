@@ -56,7 +56,7 @@ function CreateDiriverProfile() {
         if (result.isConfirmed) {
           navigate("/driver");
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-          navigate("/home");
+          navigate("/");
         }
       });
     } catch (error) {

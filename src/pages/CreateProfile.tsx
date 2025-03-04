@@ -61,7 +61,7 @@ export function CreateProfile() {
               cancelButtonText: "Rester sur le profil",
             }).then((result) => {
               if (result.isConfirmed) {
-                navigate("/home");
+                navigate("/");
               } else if (result.isDismissed) {
                 navigate("/profile");
               }
