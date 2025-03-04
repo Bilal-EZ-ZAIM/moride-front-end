@@ -21,19 +21,18 @@ export function CreateProfile() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<ProfielIntrface>();
+    formState: { errors},
+  } = useForm<any>();
   const { isLoading } = useAppSelector((state) => state.profile);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const onSubmit = async (data: ProfielIntrface) => {
-    // Filter out empty fields
+  const onSubmit = async (data:any) => {
     const filteredData: any = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => value !== "")
     );
 
-    console.log(filteredData); 
+    console.log(filteredData);
 
     try {
       Swal.fire({
@@ -51,8 +50,24 @@ export function CreateProfile() {
 
       if (res.type === "profile/createProfile/fulfilled") {
         Swal.close();
-        Swal.fire("Success", "Profile created successfully!", "success");
-        navigate("/profile");
+        Swal.fire("Success", "Profile created successfully!", "success").then(
+          () => {
+            Swal.fire({
+              title: "Votre profil a été créé!",
+              text: "Souhaitez-vous revenir à la page d'accueil ou rester sur votre profil ?",
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonText: "Aller à la page d'accueil",
+              cancelButtonText: "Rester sur le profil",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                navigate("/home");
+              } else if (result.isDismissed) {
+                navigate("/profile");
+              }
+            });
+          }
+        );
       }
     } catch (error) {
       Swal.close();
@@ -270,4 +285,4 @@ export function CreateProfile() {
   );
 }
 
-export default CreateProfile
+export default CreateProfile;

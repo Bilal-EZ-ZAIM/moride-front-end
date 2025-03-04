@@ -13,7 +13,9 @@ import { getProfile } from "../store/features/driver/driverSlice";
 export function DriverProfile() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { isLoading, profileDriver } = useAppSelector((state) => state.driver);
+  const { isLoading, profileDriver, counter } = useAppSelector(
+    (state) => state.driver
+  );
   const { profile } = useAppSelector((state) => state.profile);
   const dispatch = useAppDispatch();
 
@@ -23,12 +25,7 @@ export function DriverProfile() {
     };
 
     fetchData();
-
-    // If there's a cleanup function, return it here
-    return () => {
-      console.log("Cleanup effect");
-    };
-  }, []); // Make sure to include dependencies
+  }, [dispatch, counter]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -51,7 +48,7 @@ export function DriverProfile() {
                   languages={profileDriver.preferredLanguages}
                   rating={profileDriver.rating}
                 />
-                <WorkSchedule isOwner={true} />
+                <WorkSchedule />
                 <VehicleInfo isOwner={true} />
 
                 <ReviewsList isDriver={true} />

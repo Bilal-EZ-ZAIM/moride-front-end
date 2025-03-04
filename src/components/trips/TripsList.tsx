@@ -19,6 +19,7 @@ export function TripsList() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { loading, bookings } = useAppSelector((state) => state.booking);
+  const { driverId } = useAppSelector((state) => state.driver);
   const dispatch = useAppDispatch();
   console.log(bookings);
 
@@ -38,7 +39,7 @@ export function TripsList() {
 
   return (
     <>
-      {bookings?.length > 1 && (
+      {bookings?.length > 0 && (
         <div className="space-y-8">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -85,13 +86,17 @@ export function TripsList() {
                         </h3>
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            trip.type === "private"
+                            trip.tripType === "private"
                               ? "bg-purple-100 text-purple-700"
+                              : trip.tripType === "premium"
+                              ? "bg-yellow-100 text-yellow-700"
                               : "bg-blue-100 text-blue-700"
                           }`}
                         >
-                          {trip.type === "private"
+                          {trip.tripType === "private"
                             ? "Trajet privé"
+                            : trip.tripType === "premium"
+                            ? "Trajet premium"
                             : "Trajet partagé"}
                         </span>
                       </div>
@@ -153,10 +158,18 @@ export function TripsList() {
                       </div>
                     </div>
                     <Link to={`/tripDetails/${trip._id}`}>
-                      <Button className="flex items-center gap-2 px-8 py-3 text-base group-hover:bg-emerald-700 transition-colors duration-300">
-                        Réserver
-                        <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
-                      </Button>
+                      {trip.applicants?.some(
+                        (applicant: any) => applicant.driverId === driverId
+                      ) ? (
+                        <Button className="flex items-center gap-2 px-8 py-3 text-base bg-gray-400 cursor-not-allowed">
+                          Déjà postulé
+                        </Button>
+                      ) : (
+                        <Button className="flex items-center gap-2 px-8 py-3 text-base group-hover:bg-emerald-700 transition-colors duration-300">
+                          Postuler
+                          <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+                        </Button>
+                      )}
                     </Link>
                   </div>
                 </div>

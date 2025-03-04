@@ -22,6 +22,7 @@ interface AuthState {
   message: string | null;
   msgErrUpPwd: string | null;
   step: string | null;
+  coun: number;
 }
 
 // Initial state
@@ -39,6 +40,7 @@ const initialState: AuthState = {
   errorRegister: null,
   msgErrUpPwd: null,
   step: "email",
+  coun: 1,
 };
 
 // Create async thunk for registering a user
@@ -283,6 +285,7 @@ const authSlice = createSlice({
         state.status = true;
         localStorage.setItem("token", action.payload.token);
         console.log(state.token);
+        state.coun += 1;
       })
       .addCase(login.rejected, (state, action: any) => {
         console.log(action.payload.response.data.message);

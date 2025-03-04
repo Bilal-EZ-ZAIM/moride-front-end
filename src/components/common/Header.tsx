@@ -32,10 +32,14 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { profile, counter } = useAppSelector((state) => state.profile);
+  const { profileDriver } = useAppSelector((state) => state.driver);
+  console.log(profile);
 
   useEffect(() => {
-    dispatch(getProfile());
-  }, [counter]);
+    if (isLogin) {
+      dispatch(getProfile());
+    }
+  }, [isLogin, dispatch, counter]);
 
   const isAuthPage = ["/login", "/register", "/reset-password"].includes(
     location.pathname
@@ -44,11 +48,12 @@ export function Header() {
   if (isAuthPage) return null;
 
   const handleLogout = () => {
-    console.log("Logout");
-    // navigate("/login");
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
-  const isDriver = user?.role === "driver";
+  const isDriver = profileDriver || user?.role === "driver";
+
   console.log(user);
 
   // Navigation items with clearer labels and better organization
@@ -190,7 +195,7 @@ export function Header() {
 
           {/* Desktop Notifications and Profile */}
           <div className="hidden md:flex items-center gap-4 lg:gap-6">
-            <Link
+            {/* <Link
               to="/messages"
               className={`relative group ${
                 location.pathname === "/messages"
@@ -222,7 +227,7 @@ export function Header() {
               <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-24 bg-gray-900 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                 Notifications
               </span>
-            </Link>
+            </Link> */}
 
             <div className="relative">
               <button
@@ -341,7 +346,7 @@ export function Header() {
             </div>
 
             {/* Mobile Notifications Section */}
-            <div className="border-t border-gray-100 pt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* <div className="border-t border-gray-100 pt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
               <Link
                 to="/messages"
                 className="flex items-center p-2 rounded-lg space-x-3 text-gray-600 hover:bg-gray-50"
@@ -364,7 +369,7 @@ export function Header() {
                   2
                 </span>
               </Link>
-            </div>
+            </div> */}
 
             {/* Mobile Profile Section */}
             <div className="border-t border-gray-100 pt-3 grid grid-cols-1 md:grid-cols-2 gap-3">

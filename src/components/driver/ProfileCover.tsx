@@ -1,15 +1,8 @@
-import React, { useState, useRef } from "react";
-import {
-  Camera,
-  Upload,
-  Edit,
-  Shield,
-  Clock,
-  X,
-  MapPin,
-  Link2,
-  Mail,
-} from "lucide-react";
+import React, { useState, useRef, useCallback } from "react";
+import { Camera, Clock, MapPin, Shield, Upload, X } from "lucide-react";
+import { useAppDispatch } from "../../hooks";
+import Swal from "sweetalert2";
+import { uploadImage } from "../../store/features/profile/profileSlice";
 
 interface ProfileCoverProps {
   onEdit?: () => void;
@@ -20,55 +13,114 @@ interface ProfileCoverProps {
   isOwner: boolean;
 }
 
-export function ProfileCover({
+export const ProfileCover: React.FC<ProfileCoverProps> = ({
   onEdit,
   imageUrl,
   profileUrl,
   name,
   status,
   isOwner,
-}: ProfileCoverProps) {
+}) => {
   const [profileImage, setProfileImage] = useState(profileUrl);
   const [bannerImage, setBannerImage] = useState(imageUrl);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [bannerImageFile, setBannerImageFile] = useState<File | null>(null);
   const [isProfileUploaded, setIsProfileUploaded] = useState(false);
   const [isBannerUploaded, setIsBannerUploaded] = useState(false);
   const [isHoveringProfile, setIsHoveringProfile] = useState(false);
   const [isHoveringBanner, setIsHoveringBanner] = useState(false);
-  const [showTooltip, setShowTooltip] = useState<string | null>(null);
 
+  const dispatch = useAppDispatch();
   const profileFileInput = useRef<HTMLInputElement>(null);
   const bannerFileInput = useRef<HTMLInputElement>(null);
 
-  const handleProfileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      if (file.type.startsWith("image/")) {
-        setIsProfileUploaded(true);
-        const newImage = URL.createObjectURL(file);
-        setProfileImage(newImage);
-      }
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "profile" | "banner"
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (type === "profile") {
+          setProfileImage(reader.result as string);
+          setProfileImageFile(file);
+          setIsProfileUploaded(true);
+        } else {
+          setBannerImage(reader.result as string);
+          setBannerImageFile(file);
+          setIsBannerUploaded(true);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleBannerUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      if (file.type.startsWith("image/")) {
-        setIsBannerUploaded(true);
-        const newImage = URL.createObjectURL(file);
-        setBannerImage(newImage);
-      }
+  const resetImage = (type: "profile" | "banner") => {
+    if (type === "profile") {
+      setProfileImage(profileUrl);
+      setProfileImageFile(null);
+      setIsProfileUploaded(false);
+    } else {
+      setBannerImage(imageUrl);
+      setBannerImageFile(null);
+      setIsBannerUploaded(false);
     }
   };
 
-  const resetProfileImage = () => {
-    setProfileImage(profileUrl);
-    setIsProfileUploaded(false);
-  };
+  const uploadImageHandler = async (type: "profile" | "banner") => {
+    const data = {
+      stape: type === "profile" ? "profile" : "Banner",
+      image: type === "profile" ? profileImageFile : bannerImageFile,
+    };
 
-  const resetBannerImage = () => {
-    setBannerImage(imageUrl);
-    setIsBannerUploaded(false);
+    try {
+      let timerInterval: any;
+      Swal.fire({
+        title: "Téléchargement en cours...",
+        html: "Progression : <b>0%</b>",
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          timerInterval = setInterval(() => {
+            const progress = Swal.getHtmlContainer()?.querySelector("b");
+            if (progress) {
+              const currentProgress = Math.floor(
+                (Swal.getTimerLeft() || 0) / 100
+              );
+              progress.textContent = `${100 - currentProgress}%`;
+            }
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      });
+
+      await dispatch(uploadImage(data)).unwrap();
+
+      if (type === "profile") {
+        setIsProfileUploaded(false);
+      } else {
+        setIsBannerUploaded(false);
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Succès!",
+        text: `La ${
+          type === "profile" ? "photo de profil" : "bannière"
+        } a été téléchargée avec succès.`,
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Erreur!",
+        text: `Échec du téléchargement de la ${
+          type === "profile" ? "photo de profil" : "bannière"
+        }.`,
+      });
+    }
   };
 
   return (
@@ -83,25 +135,19 @@ export function ProfileCover({
           <img
             src={bannerImage}
             alt="Cover"
-            className={`w-full h-full object-cover transition-all duration-500 ${
-              isHoveringBanner && isOwner ? "scale-[1.02] blur-[1px]" : ""
-            }`}
+            className="w-full h-full object-cover transition-all duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
           {isOwner && (
-            <div
-              className={`absolute bottom-3 right-3 xs:bottom-2 xs:right-2 flex items-center gap-1.5 transition-opacity duration-200 ${
-                isHoveringBanner ? "opacity-100" : "opacity-0"
-              }`}
-            >
+            <div className="absolute bottom-3 right-3 xs:bottom-2 xs:right-2 flex items-center gap-1.5 transition-opacity duration-200 z-50">
               {isBannerUploaded && (
                 <button
                   className="p-1.5 xs:p-1 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-all duration-200 shadow-lg hover:shadow-xl"
-                  onClick={resetBannerImage}
+                  onClick={() => resetImage("banner")}
                   title="Reset banner image"
                 >
-                  <X className="w-3.5 h-3.5 xs:w-3 xs:h-3" />
+                  <X className="w-5 h-5" />
                 </button>
               )}
               <button
@@ -109,12 +155,17 @@ export function ProfileCover({
                 onClick={() => bannerFileInput.current?.click()}
                 title="Upload banner image"
               >
-                {isBannerUploaded ? (
-                  <Upload className="w-3.5 h-3.5 xs:w-3 xs:h-3" />
-                ) : (
-                  <Camera className="w-3.5 h-3.5 xs:w-3 xs:h-3" />
-                )}
+                <Camera className="w-5 h-5" />
               </button>
+              {isBannerUploaded && (
+                <button
+                  className="p-1.5 xs:p-1 bg-green-500/90 text-white rounded-full hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  onClick={() => uploadImageHandler("banner")}
+                  title="Confirm banner upload"
+                >
+                  <Upload className="w-5 h-5" />
+                </button>
+              )}
             </div>
           )}
           <input
@@ -122,66 +173,9 @@ export function ProfileCover({
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleBannerUpload}
+            onChange={(e) => handleImageUpload(e, "banner")}
             disabled={!isOwner}
           />
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="container mx-auto pt-3 px-2 z-50 flex justify-between">
-        {isOwner && (
-          <div className="relative">
-            <button
-              className="px-3 py-1.5 md:px-2.5 md:py-1.5 sm:p-1.5 xs:p-1 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-1.5 text-sm font-medium backdrop-blur-sm"
-              onClick={onEdit}
-              onMouseEnter={() => setShowTooltip("edit")}
-              onMouseLeave={() => setShowTooltip(null)}
-              onTouchStart={() => {
-                setShowTooltip("edit");
-                setTimeout(() => setShowTooltip(null), 1500);
-              }}
-            >
-              <Edit className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-              <span className="sm:inline-block hidden text-xs md:text-xs">Edit Profile</span>
-            </button>
-            
-          </div>
-        )}
-
-        <div className="flex items-center gap-1.5">
-          <div className="relative">
-            <a
-              href="mailto:contact@example.com"
-              className="px-3 py-1.5 md:px-2.5 md:py-1.5 sm:p-1.5 xs:p-1 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-1.5 text-sm font-medium backdrop-blur-sm"
-              onMouseEnter={() => setShowTooltip("contact")}
-              onMouseLeave={() => setShowTooltip(null)}
-              onTouchStart={() => {
-                setShowTooltip("contact");
-                setTimeout(() => setShowTooltip(null), 1500);
-              }}
-            >
-              <Mail className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-              <span className="sm:inline-block hidden text-xs md:text-xs">Contact</span>
-            </a>
-            
-          </div>
-
-          <div className="relative">
-            <a
-              href="#"
-              className="px-3 py-1.5 md:px-2.5 md:py-1.5 sm:p-1.5 xs:p-1 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-1.5 text-sm font-medium backdrop-blur-sm"
-              onMouseEnter={() => setShowTooltip("share")}
-              onMouseLeave={() => setShowTooltip(null)}
-              onTouchStart={() => {
-                setShowTooltip("share");
-                setTimeout(() => setShowTooltip(null), 1500);
-              }}
-            >
-              <Link2 className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-              <span className="sm:inline-block hidden text-xs md:text-xs">Share</span>
-            </a>
-          </div>
         </div>
       </div>
 
@@ -221,10 +215,10 @@ export function ProfileCover({
                     {isProfileUploaded && (
                       <button
                         className="p-1 sm:p-0.5 xs:p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200 shadow-lg hover:shadow-xl"
-                        onClick={resetProfileImage}
+                        onClick={() => resetImage("profile")}
                         title="Reset profile image"
                       >
-                        <X className="w-3 h-3 sm:w-2.5 sm:h-2.5 xs:w-2 xs:h-2" />
+                        <X className="w-5 h-5" />
                       </button>
                     )}
                     <button
@@ -232,12 +226,17 @@ export function ProfileCover({
                       onClick={() => profileFileInput.current?.click()}
                       title="Upload profile image"
                     >
-                      {isProfileUploaded ? (
-                        <Upload className="w-3 h-3 sm:w-2.5 sm:h-2.5 xs:w-2 xs:h-2" />
-                      ) : (
-                        <Camera className="w-3 h-3 sm:w-2.5 sm:h-2.5 xs:w-2 xs:h-2" />
-                      )}
+                      <Camera className="w-5 h-5" />
                     </button>
+                    {isProfileUploaded && (
+                      <button
+                        className="p-1 sm:p-0.5 xs:p-0.5 bg-green-500 text-white rounded-full hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                        onClick={() => uploadImageHandler("profile")}
+                        title="Confirm profile upload"
+                      >
+                        <Upload className="w-5 h-5" />
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -246,7 +245,7 @@ export function ProfileCover({
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={handleProfileUpload}
+                onChange={(e) => handleImageUpload(e, "profile")}
                 disabled={!isOwner}
               />
             </div>
@@ -282,4 +281,4 @@ export function ProfileCover({
       </div>
     </div>
   );
-}
+};

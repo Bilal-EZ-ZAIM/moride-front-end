@@ -11,6 +11,7 @@ interface DriverState {
   drivers: [];
   counter: number;
   DriverDetails: any;
+  driverId: string;
 }
 
 // Initial state
@@ -21,12 +22,14 @@ const initialState: DriverState = {
   drivers: [],
   counter: 0,
   DriverDetails: null,
+  driverId: "",
 };
 
 // Thunks
 export const getProfile = createAsyncThunk(
   "driver/getProfile",
   async (_, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.get(`${api}getDriver`, {
         headers: {
@@ -46,6 +49,7 @@ export const getProfile = createAsyncThunk(
 export const getDriverById = createAsyncThunk(
   "driver/getDriverById ",
   async (id: string, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.get(`${api}getDirver/${id}`, {
         headers: {
@@ -87,6 +91,7 @@ export const getAllDrivers = createAsyncThunk(
 export const changeRoleTodriver = createAsyncThunk(
   "driver/changeRoleTodriver",
   async (_, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.get(`${api}change/to/driver`, {
         headers: {
@@ -106,6 +111,7 @@ export const changeRoleTodriver = createAsyncThunk(
 export const createDriverProfile = createAsyncThunk(
   "driver/createProfile",
   async (createProfile: any, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.post(`${api}create`, createProfile, {
         headers: {
@@ -137,7 +143,7 @@ const DriverSlice = createSlice({
       .addCase(getProfile.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.profileDriver = action.payload;
-        console.log();
+        state.driverId = action.payload._id;
         state.errors = null;
       })
       .addCase(getProfile.rejected, (state, action: any) => {
@@ -203,11 +209,13 @@ const DriverSlice = createSlice({
       .addCase(createDriverProfile.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.errors = null;
-        state.profileDriver = action.payload;
+        // state.profileDriver = action.payload.driver;
+        state.counter += 1;
       })
       .addCase(createDriverProfile.rejected, (state, action: any) => {
         state.isLoading = false;
         state.errors = action.payload;
+        console.log(action.payload);
       });
   },
 });

@@ -37,8 +37,9 @@ export const fetchBookings = createAsyncThunk(
 export const fetchBookingById = createAsyncThunk(
   "booking/fetchBookingById",
   async (id: any, { rejectWithValue }) => {
+    console.log(id)
     try {
-      const response = await axios.get(`${API_URL}/${id}`);
+      const response = await axios.get(`${API_URL}${id}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Error fetching bookings");
@@ -50,7 +51,7 @@ export const fetchMyBookings = createAsyncThunk(
   "booking/fetchMyBookings",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/my-booking`, {
+      const response = await axios.get(`${API_URL}my-booking`, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
@@ -87,8 +88,9 @@ export const createBooking = createAsyncThunk(
 export const postule = createAsyncThunk(
   "booking/postule",
   async ({ id, data }: any, thunkAPI) => {
+    console.log(id)
     try {
-      const res = await axios.patch(`${API_URL}/${id}/apply`, data, {
+      const res = await axios.patch(`${API_URL}${id}/apply`, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -113,7 +115,7 @@ export const acceptOffer = createAsyncThunk(
     console.log(driverId);
     try {
       const response = await axios.patch(
-        `${API_URL}/${id}/accepter`,
+        `${API_URL}${id}/accepter`,
         { driverId },
         {
           headers: {

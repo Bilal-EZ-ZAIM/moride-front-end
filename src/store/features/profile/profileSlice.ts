@@ -34,6 +34,10 @@ const initialState: AuthState = {
 export const getProfile = createAsyncThunk(
   "profile/getProfile",
   async (_, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
+    console.log("================");
+    console.log(token);
+    console.log("================");
     try {
       const res = await axios.get(`${api}get/me/`, {
         headers: {
@@ -66,6 +70,7 @@ export const createProfile = createAsyncThunk(
         },
       });
 
+      console.log(res);
       return res.data;
     } catch (error: any) {
       console.error(error.response?.data || error.message);
@@ -129,7 +134,8 @@ const profileSlice = createSlice({
       })
       .addCase(createProfile.fulfilled, (state, action: any) => {
         state.isLoading = false;
-        state.profile = action.payload;
+        // state.counter += 1;
+        state.profile = action.payload.profile;
         console.log(action.payload);
         state.erros = null;
       })

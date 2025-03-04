@@ -19,6 +19,7 @@ import { useAppDispatch } from "../../hooks";
 export function TripInfo({ booking }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
+  
 
   console.log(booking);
   const handleApplicationSubmit = async (data: {

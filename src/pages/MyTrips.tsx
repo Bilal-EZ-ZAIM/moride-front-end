@@ -51,183 +51,6 @@ const Badge = ({ children, variant = "default", className = "" }) => {
   );
 };
 
-// Button component
-// const Button = ({
-//   children,
-//   variant = "default",
-//   size = "default",
-//   className = "",
-//   onClick,
-//   disabled = false,
-// }) => {
-//   const variantStyles = {
-//     default: "bg-emerald-600 hover:bg-emerald-700 text-white",
-//     outline:
-//       "bg-transparent border border-gray-300 hover:bg-gray-50 text-gray-700",
-//     ghost: "bg-transparent hover:bg-gray-50 text-gray-700",
-//   };
-
-//   const sizeStyles = {
-//     default: "px-4 py-2 text-sm",
-//     sm: "px-3 py-1.5 text-xs",
-//     lg: "px-6 py-3 text-base",
-//   };
-
-//   return (
-//     <button
-//       className={`inline-flex items-center justify-center font-medium rounded-lg transition-colors ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
-//       onClick={onClick}
-//       disabled={disabled}
-//     >
-//       {children}
-//     </button>
-//   );
-// };
-
-// Sample data from the provided JSON
-const tripsDatas = [
-  {
-    _id: "67bf4706922656c99a99694c",
-    from: "marrakech",
-    to: "youssoufia",
-    date: "2025-03-09",
-    time: "08:38",
-    passengers: 3,
-    tripType: "shared",
-    notes: "Amet aut consequatu",
-    userId: "67bf42203078d68a92341ae4",
-    profileId: "67bf467f922656c99a99693d",
-    priceFrom: "200",
-    priceTo: "299",
-    applicants: [
-      {
-        status: "pending",
-        driverId: {
-          _id: "67b9218c7bd867b7845154c2",
-          rating: 0,
-          profile: {
-            _id: "67b8aa0a6992a04820c566b4",
-            firstname: "bilal",
-            lastname: "ezzaim",
-            imageProfile: {
-              url: "http://res.cloudinary.com/dsldmzxqt/image/upload/v1740237625/profile_images/ox4c0nps1lm09wmqfoel.jpg",
-              key: "profile_images/ox4c0nps1lm09wmqfoel",
-            },
-          },
-          ratings: [],
-        },
-        message: "Nouvelle demande",
-        date: "2025-02-26",
-        time: "14:30",
-        price: 150,
-        _id: "67bf55906d14b8ff005bd0f6",
-      },
-      {
-        status: "pending",
-        driverId: {
-          _id: "67ba4bd926c3592ece2a2fd7",
-          rating: 0,
-          profile: {
-            _id: "67b8aa236992a04820c566c2",
-            firstname: "Hajar",
-            lastname: "Eddyb",
-            imageProfile: {
-              url: "http://res.cloudinary.com/dsldmzxqt/image/upload/v1740328542/profile_images/rwxba59e7kwxzwepgdu9.jpg",
-              key: "profile_images/rwxba59e7kwxzwepgdu9",
-            },
-          },
-          ratings: [],
-        },
-        message: "Nouvelle demande",
-        date: "2025-02-26",
-        time: "14:30",
-        price: 150,
-        _id: "67bf55b26d14b8ff005bd100",
-      },
-    ],
-    createdAt: "2025-02-26T16:53:26.307Z",
-    updatedAt: "2025-02-26T17:56:02.243Z",
-    __v: 2,
-    status: "active", // Added for UI purposes
-  },
-  {
-    _id: "67c045a2b598a2aeda797390",
-    from: "Maârif",
-    to: "Aïn Chock",
-    date: "2025-02-27",
-    time: "08:20",
-    passengers: 2,
-    tripType: "shared",
-    notes: "Cumque atque aliqua",
-    userId: "67bf42203078d68a92341ae4",
-    profileId: "67bf467f922656c99a99693d",
-    priceFrom: "30",
-    priceTo: "48",
-    applicants: [],
-    createdAt: "2025-02-27T10:59:46.721Z",
-    updatedAt: "2025-02-27T10:59:46.721Z",
-    __v: 0,
-    status: "active", // Added for UI purposes
-  },
-  {
-    _id: "67c045e5b598a2aeda797399",
-    from: "Casablanca",
-    to: "Mohammédia",
-    date: "2025-02-28",
-    time: "16:00",
-    passengers: 1,
-    tripType: "private",
-    notes: "",
-    userId: "67bf42203078d68a92341ae4",
-    profileId: "67bf467f922656c99a99693d",
-    priceFrom: "50",
-    priceTo: "79",
-    applicants: [],
-    createdAt: "2025-02-27T11:00:53.385Z",
-    updatedAt: "2025-02-27T11:00:53.385Z",
-    __v: 0,
-    status: "completed", // Added for UI purposes
-  },
-  {
-    _id: "67c04602b598a2aeda7973b4",
-    from: "Aut id aliquid cons",
-    to: "Itaque maxime labore",
-    date: "2006-01-30",
-    time: "09:16",
-    passengers: 3,
-    tripType: "private",
-    notes: "Minim exercitation r",
-    userId: "67bf42203078d68a92341ae4",
-    profileId: "67bf467f922656c99a99693d",
-    priceFrom: "319",
-    priceTo: "824",
-    applicants: [],
-    createdAt: "2025-02-27T11:01:22.904Z",
-    updatedAt: "2025-02-27T11:01:22.904Z",
-    __v: 0,
-    status: "active", // Added for UI purposes
-  },
-  {
-    _id: "67c0464d84643d9c97e60c1c",
-    from: "Quia id aut magnam ",
-    to: "Ea quidem fugit eu ",
-    date: "1971-05-29",
-    time: "06:58",
-    passengers: 3,
-    tripType: "private",
-    notes: "Commodo doloremque q",
-    userId: "67bf42203078d68a92341ae4",
-    profileId: "67bf467f922656c99a99693d",
-    priceFrom: "230",
-    priceTo: "156",
-    applicants: [],
-    createdAt: "2025-02-27T11:02:37.423Z",
-    updatedAt: "2025-02-27T11:02:37.423Z",
-    __v: 0,
-    status: "cancelled", // Added for UI purposes
-  },
-];
-
 function MyTrips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -249,16 +72,18 @@ function MyTrips() {
     const getData = async () => {
       await dispatch(fetchMyBookings());
     };
-    getData();
 
-    // Update trips when myBookings changes
+    getData();
+  }, [dispatch, counter]);
+
+  useEffect(() => {
     if (myBookings && myBookings.length > 0) {
       setTrips(myBookings);
     }
-  }, [dispatch, counter]);
+  }, [myBookings]);
+
   console.log(myBookings);
 
-  // Filter trips based on search term and status
   const filteredTrips = trips.filter((trip) => {
     const matchesSearch =
       trip.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -294,13 +119,13 @@ function MyTrips() {
   const currentTrips = sortedTrips.slice(indexOfFirstTrip, indexOfLastTrip);
   const totalPages = Math.ceil(sortedTrips.length / tripsPerPage);
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: any) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce trajet ?")) {
-      setTrips(trips.filter((trip) => trip._id !== id));
+      setTrips(trips.filter((trip: any) => trip._id !== id));
     }
   };
 
-  const handleViewDetails = (trip) => {
+  const handleViewDetails = (trip: any) => {
     setSelectedTrip(trip);
     setIsDetailModalOpen(true);
   };
@@ -310,7 +135,7 @@ function MyTrips() {
     setSelectedTrip(null);
   };
 
-  const handleSortChange = (criteria) => {
+  const handleSortChange = (criteria: any) => {
     if (sortBy === criteria) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
@@ -340,13 +165,14 @@ function MyTrips() {
           "L'offre a été acceptée avec succès.",
           "success"
         );
+        handleCloseModal();
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         // If user cancels, show cancellation message
         Swal.fire("Annulé", "L'offre n'a pas été acceptée.", "info");
       }
     });
   };
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: any) => {
     switch (status) {
       case "active":
         return (
@@ -379,13 +205,13 @@ function MyTrips() {
     }
   };
 
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
+  const formatDate = (dateString: any) => {
+    const options: any = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString("fr-FR", options);
   };
 
   // Helper function to get driver name from applicant
-  const getDriverName = (applicant) => {
+  const getDriverName = (applicant: any) => {
     if (applicant && applicant.driverId && applicant.driverId.profile) {
       return `${applicant.driverId.profile.firstname} ${applicant.driverId.profile.lastname}`;
     }

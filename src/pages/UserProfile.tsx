@@ -20,7 +20,7 @@ export function UserProfile() {
   console.log(profile);
   useEffect(() => {
     dispatch(getProfile());
-  }, [counter]);
+  }, [dispatch]);
 
   const data = {
     imageBanner: profile?.imageBanner,

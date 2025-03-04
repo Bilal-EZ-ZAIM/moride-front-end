@@ -13,6 +13,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { createDriverProfile } from "../store/features/driver/driverSlice";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 interface DriverProfile {
   gender: string;
@@ -36,16 +37,27 @@ function CreateDiriverProfile() {
   const { isLoading } = useAppSelector((state) => state.driver);
   const { profile } = useAppSelector((state) => state.profile);
   const dispatch = useAppDispatch();
-  console.log(profile)
+  const navigate = useNavigate();
 
   const onSubmit = async (data: DriverProfile) => {
     data.profile = profile?._id;
+
     try {
       await dispatch(createDriverProfile(data)).unwrap();
+
       Swal.fire({
         icon: "success",
         title: "Succès",
         text: "Profil créé avec succès!",
+        showCancelButton: true,
+        confirmButtonText: "Aller à mon profil",
+        cancelButtonText: "Retour à l'accueil",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/driver");
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          navigate("/home");
+        }
       });
     } catch (error) {
       Swal.fire({
