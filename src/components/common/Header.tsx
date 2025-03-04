@@ -280,7 +280,7 @@ export function Header() {
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     <Settings className="w-4 h-4" />
-                    {isDriver ? "Tableau de bord" : "Mon profil"}
+                    {isDriver ? "Tableau de bord" : "Mon profile"}
                   </Link>
                   <Link
                     to="/change-password"
@@ -373,34 +373,44 @@ export function Header() {
 
             {/* Mobile Profile Section */}
             <div className="border-t border-gray-100 pt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Link
-                to={isDriver ? "/driver" : "/profile"}
-                className="flex items-center p-2 rounded-lg space-x-3 text-gray-600 hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Settings className="w-5 h-5 shrink-0" />
-                <span className="font-medium">
-                  {isDriver ? "Tableau de bord" : "Mon profil"}
-                </span>
-              </Link>
-              <Link
-                to="/change-password"
-                className="flex items-center p-2 rounded-lg space-x-3 text-gray-600 hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Lock className="w-5 h-5 shrink-0" />
-                <span className="font-medium">Changer mot de passe</span>
-              </Link>
-              <button
-                className="flex items-center p-2 rounded-lg space-x-3 text-red-600 hover:bg-red-50 w-full text-left col-span-full"
-                onClick={() => {
-                  handleLogout();
-                  setIsMenuOpen(false);
-                }}
-              >
-                <LogOut className="w-5 h-5 shrink-0" />
-                <span className="font-medium">Déconnexion</span>
-              </button>
+              {isDriver ||
+                (profile && (
+                  <Link
+                    to={isDriver ? "/driver" : "/profile"}
+                    className="flex items-center p-2 rounded-lg space-x-3 text-gray-600 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {isDriver ||
+                      (profile && <Settings className="w-5 h-5 shrink-0" />)}
+                    <span className="font-medium">
+                      {isDriver ? "Tableau de bord" : null}
+                      {profile ? "Mon profile" : null}
+                    </span>
+                  </Link>
+                ))}
+              {isLogin && (
+                <>
+                  {" "}
+                  <Link
+                    to="/change-password"
+                    className="flex items-center p-2 rounded-lg space-x-3 text-gray-600 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Lock className="w-5 h-5 shrink-0" />
+                    <span className="font-medium">Changer mot de passe</span>
+                  </Link>
+                  <button
+                    className="flex items-center p-2 rounded-lg space-x-3 text-red-600 hover:bg-red-50 w-full text-left col-span-full"
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="w-5 h-5 shrink-0" />
+                    <span className="font-medium">Déconnexion</span>
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Mobile User Info */}
