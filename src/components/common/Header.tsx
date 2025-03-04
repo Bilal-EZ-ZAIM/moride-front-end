@@ -429,6 +429,7 @@ export function Header() {
             ) : (
               isLogin && (
                 <Link
+                  onClick={() => setIsMenuOpen(false)}
                   to="/create/profile"
                   className="text-emerald-600 hover:text-emerald-700 font-medium"
                 >
