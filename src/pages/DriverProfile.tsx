@@ -27,6 +27,8 @@ export function DriverProfile() {
     fetchData();
   }, [dispatch, counter]);
 
+  console.log(profileDriver)
+
   return (
     <div className="min-h-screen bg-gray-50">
       {profileDriver && (
