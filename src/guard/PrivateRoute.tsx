@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "../hooks";
 
 interface ProtectedRouteProps {
@@ -16,5 +16,5 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to={redirectPath} replace />;
   }
 
-  return children ? <>{children}</> : null;
+  return <Outlet />;
 };

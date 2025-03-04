@@ -23,14 +23,14 @@ export function BookTrip() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Booking Form Section */}
-            <div className="lg:col-span-2 transition-all duration-300 transform hover:translate-y-[-2px]">
+            <div className="lg:col-span-3 transition-all duration-300 transform hover:translate-y-[-2px]">
               <div className="sticky top-8">
                 <BookingForm />
               </div>
             </div>
 
             {/* Driver Responses Section */}
-            <div className="transition-all duration-300 transform hover:translate-y-[-2px]">
+            {/* <div className="transition-all duration-300 transform hover:translate-y-[-2px]">
               <div className="sticky top-8">
                 <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                   <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
@@ -42,7 +42,7 @@ export function BookTrip() {
                   <DriverResponses />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
