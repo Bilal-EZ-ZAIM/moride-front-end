@@ -21,6 +21,7 @@ export function ContactSection({
   social,
   isOwner,
 }: ContactSectionProps) {
+  console.log(phone)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
   const [updatedPhone, setUpdatedPhone] = useState(phone);

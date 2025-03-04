@@ -256,7 +256,6 @@ function CreateDiriverProfile() {
                       <option value="">Sélectionnez</option>
                       <option value="Disponible">Disponible</option>
                       <option value="Occupé">Occupé</option>
-                      <option value="En congé">En congé</option>
                     </select>
                     {errors.status && (
                       <p className="text-red-500 text-sm mt-1">

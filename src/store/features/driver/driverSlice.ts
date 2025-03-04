@@ -156,6 +156,7 @@ const DriverSlice = createSlice({
       .addCase(getDriverById.pending, (state) => {
         state.errors = null;
         state.isLoading = true;
+        state.DriverDetails = null;
       })
       .addCase(getDriverById.fulfilled, (state, action: any) => {
         state.isLoading = false;

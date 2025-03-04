@@ -9,31 +9,25 @@ import WorkSchedule from "../components/driver/WorkSchedule";
 import { useParams } from "react-router-dom";
 import { VehicleInfoDriver } from "../components/driver/VehicleInfoDriver";
 import WorkScheduleDetails from "../components/driver/WorkScheduleDetails";
+import { getDriverById } from "../store/features/driver/driverSlice";
 
 export function DriverDetails() {
-  const { isLoading, drivers } = useAppSelector((state) => state.driver);
+  const { isLoading, DriverDetails } = useAppSelector(
+    (state) => state.driver
+  );
   const dispatch = useAppDispatch();
-  const [DriverDetails, setDriverDetails] = useState<any>();
 
   console.log(DriverDetails);
   const { id } = useParams();
   console.log(id);
   useEffect(() => {
-    // const fetchData = async () => {
-    //   if (id) {
-    //     await dispatch(getDriverById(id));
-    //   }
-    // };
-
-    if (drivers && id) {
-      setDriverDetails(drivers.find((item: any) => item?._id === id));
-    }
-
-    // fetchData();
-
-    return () => {
-      console.log("Cleanup effect");
+    const fetchData = async () => {
+      if (id) {
+        await dispatch(getDriverById(id));
+      }
     };
+
+    fetchData();
   }, [id]);
 
   return (

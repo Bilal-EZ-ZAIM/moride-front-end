@@ -139,6 +139,7 @@ const carSlice = createSlice({
       })
       .addCase(createCar.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.car = action.payload.car;
       })
       .addCase(createCar.rejected, (state, action) => {
         state.isLoading = false;
@@ -177,6 +178,7 @@ const carSlice = createSlice({
       .addCase(getCarByDriver.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.carDriver = null;
       })
       .addCase(getCarByDriver.fulfilled, (state, action) => {
         state.isLoading = false;

@@ -116,16 +116,12 @@ export const updateWorkingHours = createAsyncThunk(
     const id = state.working.id;
 
     try {
-      const res = await axios.patch(
-        `${api}${id}`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.patch(`${api}${id}`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log(res);
       return res.data;
     } catch (error: any) {
@@ -204,6 +200,7 @@ const WorkingSlice = createSlice({
 
       .addCase(getDriverWorkSchedule.pending, (state) => {
         state.isLoading = true;
+        state.viewerWorkingDetails = null;
       })
       .addCase(getDriverWorkSchedule.fulfilled, (state, action) => {
         state.viewerWorkingDetails = action.payload.data.weekSchedule;
