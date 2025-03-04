@@ -414,24 +414,40 @@ export function Header() {
             </div>
 
             {/* Mobile User Info */}
-            {profile && (
-              <div className="border-t border-gray-100 pt-3 flex items-center space-x-3 p-2">
-                <img
-                  src={profile?.imageProfile?.url}
-                  alt={user?.name || "User"}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-emerald-600"
-                />
-                <div>
-                  <p className="font-medium text-gray-900">{user?.name}</p>
-                  <p className="text-sm text-gray-600">{user?.email}</p>
-                  {isDriver && (
-                    <span className="inline-block mt-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                      Chauffeur professionnel
-                    </span>
-                  )}
+
+            <button
+              className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded-lg transition-colors"
+            >
+              {profile ? (
+                <div className="flex items-center gap-2">
+                  <img
+                    src={profile?.imageProfile?.url}
+                    alt={user?.name || "User"}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-emerald-600"
+                  />
+                  <span className="hidden sm:inline-block text-sm font-medium text-gray-700">
+                    {user?.name}
+                  </span>
                 </div>
-              </div>
-            )}
+              ) : (
+                isLogin && (
+                  <Link
+                    to="/create/profile"
+                    className="text-emerald-600 hover:text-emerald-700 font-medium"
+                  >
+                    Compléter mon profil
+                  </Link>
+                )
+              )}
+              {isLogin && (
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-600 transition-transform ${
+                    isProfileOpen ? "rotate-180" : ""
+                  }`}
+                />
+              )}
+            </button>
+           
           </div>
         )}
       </nav>
