@@ -12,9 +12,7 @@ import WorkScheduleDetails from "../components/driver/WorkScheduleDetails";
 import { getDriverById } from "../store/features/driver/driverSlice";
 
 export function DriverDetails() {
-  const { isLoading, DriverDetails } = useAppSelector(
-    (state) => state.driver
-  );
+  const { isLoading, DriverDetails } = useAppSelector((state) => state.driver);
   const dispatch = useAppDispatch();
 
   console.log(DriverDetails);
@@ -55,7 +53,7 @@ export function DriverDetails() {
                   isOwner={false}
                   driverId={DriverDetails.userId}
                 />
-                <ReviewsList isDriver={false} />
+                {/* <ReviewsList isDriver={false} /> */}
               </div>
 
               <div className="space-y-8">

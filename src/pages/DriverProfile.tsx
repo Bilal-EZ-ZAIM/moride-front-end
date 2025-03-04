@@ -53,7 +53,7 @@ export function DriverProfile() {
                 <WorkSchedule />
                 <VehicleInfo isOwner={true} />
 
-                <ReviewsList isDriver={true} />
+                {/* <ReviewsList isDriver={true} /> */}
               </div>
 
               <div className="space-y-8">
