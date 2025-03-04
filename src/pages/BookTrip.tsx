@@ -1,6 +1,5 @@
-import { BookingForm } from '../components/booking/BookingForm';
-import { DriverResponses } from '../components/booking/DriverResponses';
-import { Car } from 'lucide-react';
+import { BookingForm } from "../components/booking/BookingForm";
+import { Car } from "lucide-react";
 
 export function BookTrip() {
   return (
@@ -52,7 +51,8 @@ export function BookTrip() {
               Besoin d'aide ?
             </h3>
             <p className="text-emerald-600">
-              Notre équipe est disponible 24/7 pour vous assister dans votre réservation
+              Notre équipe est disponible 24/7 pour vous assister dans votre
+              réservation
             </p>
           </div>
         </div>

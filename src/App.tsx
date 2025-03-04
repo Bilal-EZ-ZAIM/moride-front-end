@@ -57,7 +57,7 @@ export function App() {
             <Route path="driver/dashboard" element={<DriverDashboard />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/change-password" element={<ChangePassword />} />
-            <Route path="/welcome/page" element={<WelcomePage />} />
+
             <Route path="/create/profile" element={<CreateProfile />} />
             <Route path="/create/driver" element={<CreateDiriverProfile />} />
           </Route>
@@ -65,6 +65,7 @@ export function App() {
           <Route path="/driver/:id" element={<DriverDetails />} />
           <Route path="drivers" element={<DriversListing />} />
         </Route>
+        <Route path="/welcome/page" element={<WelcomePage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/messages" element={<Messages />} />
