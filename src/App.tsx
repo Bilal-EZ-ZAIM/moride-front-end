@@ -24,8 +24,7 @@ import CreateDiriverProfile from "./pages/CreateDriverProfile";
 import { DriverProfile } from "./pages/DriverProfile";
 import { DriverDetails } from "./pages/DriverDetails";
 import MyTrips from "./pages/MyTrips";
-import { ProtectedRoute } from "./guard/PrivateRoute";
-import { CheckDriver } from "./guard/CheckDriver";
+import ProtectedRoute from "./guard/PrivateRoute";
 
 export function App() {
   const dispatch = useAppDispatch();
@@ -44,12 +43,9 @@ export function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
 
-          <Route element={<CheckDriver />}>
-            <Route path="driver" element={<DriverProfile />} />
-          </Route>
-
           <Route element={<ProtectedRoute />}>
             <Route path="/payment" element={<Payment />} />
+            <Route path="driver" element={<DriverProfile />} />
             <Route path="/MyTrips" element={<MyTrips />} />
             <Route path="/tripDetails/:id" element={<TripDetails />} />
             <Route path="bookings" element={<TripOffers />} />

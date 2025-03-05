@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 export const CheckDriver: React.FC<ProtectedRouteProps> = ({
-  redirectPath = "/login",
+  redirectPath = "/",
 }) => {
   const { isLogin, user } = useAppSelector((state) => state.auth);
 

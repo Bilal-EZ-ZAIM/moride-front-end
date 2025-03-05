@@ -7,14 +7,17 @@ interface ProtectedRouteProps {
   children?: React.ReactNode;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   redirectPath = "/login",
   children,
 }) => {
-  const { isLogin } = useAppSelector((state) => state.auth);
+  const isLogin = useAppSelector((state) => state.auth.isLogin);
+
   if (!isLogin) {
     return <Navigate to={redirectPath} replace />;
   }
 
-  return <Outlet />;
+  return children ? <>{children}</> : <Outlet />;
 };
+
+export default ProtectedRoute;
