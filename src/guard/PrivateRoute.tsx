@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  redirectPath = "/login",
+  redirectPath = "/",
   children,
 }) => {
   const isLogin = useAppSelector((state) => state.auth.isLogin);

@@ -121,12 +121,6 @@ export function Header() {
           description: "Page d'accueil",
         },
         {
-          path: "/driver",
-          label: "Tableau de bord",
-          icon: Settings,
-          description: "Gérer votre compte chauffeur",
-        },
-        {
           path: "/bookings",
           label: "Trajets disponibles",
           icon: Search,
