@@ -250,7 +250,6 @@ export const ProfileCover: React.FC<ProfileCoverProps> = ({
               />
             </div>
 
-            {/* Profile Info */}
             <div className="flex-1 text-white pb-1">
               <div className="flex items-center gap-1.5 mb-1 xs:mb-0.5">
                 <h1 className="text-xl md:text-lg sm:text-base xs:text-sm 2xs:text-xs font-bold tracking-tight">
