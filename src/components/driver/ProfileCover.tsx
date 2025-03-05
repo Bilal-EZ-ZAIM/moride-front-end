@@ -140,7 +140,7 @@ export const ProfileCover: React.FC<ProfileCoverProps> = ({
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
           {isOwner && (
-            <div className="absolute bottom-3 right-3 xs:bottom-2 xs:right-2 flex items-center gap-1.5 transition-opacity duration-200 z-50">
+            <div className="absolute bottom-3 right-3 xs:bottom-2 xs:right-2 flex items-center gap-1.5 transition-opacity duration-200 z-40">
               {isBannerUploaded && (
                 <button
                   className="p-1.5 xs:p-1 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-all duration-200 shadow-lg hover:shadow-xl"
