@@ -10,12 +10,13 @@ import { useParams } from "react-router-dom";
 import { VehicleInfoDriver } from "../components/driver/VehicleInfoDriver";
 import WorkScheduleDetails from "../components/driver/WorkScheduleDetails";
 import { getDriverById } from "../store/features/driver/driverSlice";
+import { PricingDetails } from "../components/pricing/PricingDetails";
 
 export function DriverDetails() {
   const { isLoading, DriverDetails } = useAppSelector((state) => state.driver);
   const dispatch = useAppDispatch();
 
-  console.log(DriverDetails);
+ 
   const { id } = useParams();
   console.log(id);
   useEffect(() => {
@@ -27,6 +28,10 @@ export function DriverDetails() {
 
     fetchData();
   }, [id]);
+
+  console.log(DriverDetails?._id);
+
+  console.log(DriverDetails?.userId);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -57,7 +62,7 @@ export function DriverDetails() {
               </div>
 
               <div className="space-y-8">
-                <PricingSettings />
+                <PricingDetails userId={DriverDetails.userId} />
                 <ContactSection
                   isOwner={false}
                   phone={DriverDetails.profile.phone}

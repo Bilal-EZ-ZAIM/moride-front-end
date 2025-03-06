@@ -104,11 +104,7 @@ export const fetchDriverPricingDetails = createAsyncThunk(
   "pricing/fetchDriverPricingDetails",
   async (driverId: string, thunkAPI) => {
     try {
-      const res = await axios.get(`${api}driver/${driverId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(`${api}${driverId}`);
       return res.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
@@ -185,6 +181,7 @@ const PricingSlice = createSlice({
       .addCase(fetchDriverPricingDetails.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.driverPricingDetails = null;
       })
       .addCase(fetchDriverPricingDetails.fulfilled, (state, action) => {
         state.isLoading = false;
