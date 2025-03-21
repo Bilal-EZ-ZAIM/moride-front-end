@@ -1,11 +1,10 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef } from "react";
 import { Camera, Clock, MapPin, Shield, Upload, X } from "lucide-react";
 import { useAppDispatch } from "../../hooks";
 import Swal from "sweetalert2";
 import { uploadImage } from "../../store/features/profile/profileSlice";
 
 interface ProfileCoverProps {
-  onEdit?: () => void;
   imageUrl: string;
   profileUrl: string;
   name: string;
@@ -14,7 +13,6 @@ interface ProfileCoverProps {
 }
 
 export const ProfileCover: React.FC<ProfileCoverProps> = ({
-  onEdit,
   imageUrl,
   profileUrl,
   name,
@@ -75,22 +73,26 @@ export const ProfileCover: React.FC<ProfileCoverProps> = ({
     };
 
     try {
+      let progressValue = 0;
       let timerInterval: any;
+
       Swal.fire({
         title: "Téléchargement en cours...",
         html: "Progression : <b>0%</b>",
         timerProgressBar: true,
         didOpen: () => {
           Swal.showLoading();
+          const progressElement = Swal.getHtmlContainer()?.querySelector("b");
+
           timerInterval = setInterval(() => {
-            const progress = Swal.getHtmlContainer()?.querySelector("b");
-            if (progress) {
-              const currentProgress = Math.floor(
-                (Swal.getTimerLeft() || 0) / 100
-              );
-              progress.textContent = `${100 - currentProgress}%`;
+            if (progressElement) {
+              progressValue += 5; 
+              if (progressValue > 100) {
+                progressValue = 100; 
+              }
+              progressElement.textContent = `${progressValue}%`;
             }
-          }, 100);
+          }, 500);
         },
         willClose: () => {
           clearInterval(timerInterval);

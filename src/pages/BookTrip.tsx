@@ -27,20 +27,7 @@ export function BookTrip() {
               </div>
             </div>
 
-            {/* Driver Responses Section */}
-            {/* <div className="transition-all duration-300 transform hover:translate-y-[-2px]">
-              <div className="sticky top-8">
-                <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-                    <span className="bg-emerald-100 p-2 rounded-lg mr-3">
-                      <Car className="w-5 h-5 text-emerald-600" />
-                    </span>
-                    Réponses des Chauffeurs
-                  </h2>
-                  <DriverResponses />
-                </div>
-              </div>
-            </div> */}
+           
           </div>
         </div>
 

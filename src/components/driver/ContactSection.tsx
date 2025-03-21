@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { Phone, MapPin, Facebook, Linkedin, Globe } from "lucide-react";
 import { Button } from "../common/Button";
 import { useForm, Controller } from "react-hook-form";
+import { updateProfile } from "../../store/features/profile/profileSlice";
+import { useAppDispatch } from "../../hooks";
+import Swal from "sweetalert2";
 
 interface ContactSectionProps {
   phone: string;
   address: string;
   social: {
     facebook: string;
-    linkedin: string;
+    linkedIn: string;
     whatsapp: string;
     portfolio: string;
   };
@@ -21,13 +24,12 @@ export function ContactSection({
   social,
   isOwner,
 }: ContactSectionProps) {
-  console.log(phone)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
   const [updatedPhone, setUpdatedPhone] = useState(phone);
   const [updatedAddress, setUpdatedAddress] = useState(address);
   const [updatedSocial, setUpdatedSocial] = useState(social);
-
+  const dispatch = useAppDispatch();
   const {
     handleSubmit,
     control,
@@ -53,9 +55,30 @@ export function ContactSection({
 
   const handleSocialSave = (data: any) => {
     setUpdatedSocial(data.social);
+    console.log(data.social);
     setIsSocialModalOpen(false);
-  };
 
+    dispatch(updateProfile(data.social))
+      .then((result: any) => {
+        if (result.type === "profile/updateProfile/fulfilled") {
+          Swal.fire({
+            title: "Success!",
+            text: "Your profile has been updated successfully.",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+        }
+      })
+      .catch((error: any) => {
+        Swal.fire({
+          title: "Error!",
+          text:
+            error.message || "An error occurred while updating your profile.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      });
+  };
   return (
     <div className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Contact</h2>
@@ -98,7 +121,7 @@ export function ContactSection({
         </a>
 
         <a
-          href={updatedSocial.linkedin}
+          href={updatedSocial.linkedIn}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-lg transition-all duration-300 group"
@@ -266,7 +289,7 @@ export function ContactSection({
                 </label>
                 <Controller
                   control={control}
-                  name="social.linkedin"
+                  name="social.linkedIn"
                   rules={{
                     pattern: {
                       value: /^https?:\/\/(www\.)?linkedin\.com/,
@@ -282,9 +305,9 @@ export function ContactSection({
                     />
                   )}
                 />
-                {errors.social?.linkedin && (
+                {errors.social?.linkedIn && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.social.linkedin.message as string}
+                    {errors.social.linkedIn.message as string}
                   </p>
                 )}
               </div>
@@ -296,26 +319,15 @@ export function ContactSection({
                 <Controller
                   control={control}
                   name="social.portfolio"
-                  rules={{
-                    pattern: {
-                      value: /^https?:\/\//,
-                      message: "URL invalide",
-                    },
-                  }}
                   render={({ field }) => (
                     <input
                       type="url"
                       {...field}
                       className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                      placeholder="https://example.com"
+                      placeholder="https://portfolio.com"
                     />
                   )}
                 />
-                {errors.social?.portfolio && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.social.portfolio.message as string}
-                  </p>
-                )}
               </div>
 
               <div className="flex justify-end gap-4 mt-6">

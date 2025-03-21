@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import {
   MapPin,
@@ -11,7 +10,6 @@ import {
   User,
 } from "lucide-react";
 import { Button } from "../components/common/Button";
-import { ProfielIntrface } from "../interface/profileInterface";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { createProfile } from "../store/features/profile/profileSlice";
 import Swal from "sweetalert2";
@@ -21,57 +19,60 @@ export function CreateProfile() {
   const {
     register,
     handleSubmit,
-    formState: { errors},
+    formState: { errors },
   } = useForm<any>();
-  const { isLoading } = useAppSelector((state) => state.profile);
+  const { isLoading, errorPhone } = useAppSelector((state) => state.profile);
+  console.log(errorPhone);
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const onSubmit = async (data:any) => {
+  const onSubmit = async (data: any) => {
     const filteredData: any = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => value !== "")
     );
 
     console.log(filteredData);
 
-    try {
-      Swal.fire({
-        title: "Loading...",
-        text: "Creating your profile, please wait...",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
+    Swal.fire({
+      title: "Loading...",
+      text: "Creating your profile, please wait...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
-      const res = await dispatch(createProfile(filteredData));
+    const res = await dispatch(createProfile(filteredData));
 
-      console.log(res);
 
-      if (res.type === "profile/createProfile/fulfilled") {
-        Swal.close();
-        Swal.fire("Success", "Profile created successfully!", "success").then(
-          () => {
-            Swal.fire({
-              title: "Votre profil a été créé!",
-              text: "Souhaitez-vous revenir à la page d'accueil ou rester sur votre profil ?",
-              icon: "question",
-              showCancelButton: true,
-              confirmButtonText: "Aller à la page d'accueil",
-              cancelButtonText: "Rester sur le profil",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                navigate("/");
-              } else if (result.isDismissed) {
-                navigate("/profile");
-              }
-            });
-          }
-        );
-      }
-    } catch (error) {
+    if (res.type === "profile/createProfile/fulfilled") {
       Swal.close();
-      Swal.fire("Error", "Something went wrong!", "error");
+      Swal.fire("Success", "Profile created successfully!", "success").then(
+        () => {
+          Swal.fire({
+            title: "Votre profil a été créé!",
+            text: "Souhaitez-vous revenir à la page d'accueil ou rester sur votre profil ?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Aller à la page d'accueil",
+            cancelButtonText: "Rester sur le profil",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/");
+            } else {
+              navigate("/profile");
+            }
+          });
+        }
+      );
+    } else if (res.error) {
+      Swal.close();
+      Swal.fire({
+        title: "Erreur",
+        text: res.error.message || "Une erreur est survenue",
+        icon: "error",
+      });
     }
   };
 
@@ -175,12 +176,18 @@ export function CreateProfile() {
                     className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
                     placeholder="+212612345678"
                   />
-                  {errors.phone && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.phone.message}
-                    </p>
-                  )}
                 </div>
+                {errorPhone && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Ce numéro de téléphone est déjà utilisé. Veuillez en choisir
+                    un autre.
+                  </p>
+                )}
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.phone.message}
+                  </p>
+                )}
               </div>
 
               <div>

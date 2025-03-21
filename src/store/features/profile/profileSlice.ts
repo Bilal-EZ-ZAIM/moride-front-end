@@ -3,12 +3,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { ProfielIntrface } from "../../../interface/profileInterface";
 
-//const api: string = "https://backend-moride-git-main-bilanox1s-projects.vercel.app/api/v1/profile/";
-
 const apiUrl: string = import.meta.env.VITE_API_URL;
 const api: string = `${apiUrl}/profile/`;
-
-// const api: string = "https://sportfy.onrender.com";
 
 const token = localStorage.getItem("token");
 
@@ -20,6 +16,7 @@ interface AuthState {
   profile: any | null;
   erros: string | null;
   counter: number;
+  errorPhone: string;
 }
 
 // Initial state
@@ -29,6 +26,7 @@ const initialState: AuthState = {
   profile: null,
   erros: null,
   counter: 0,
+  errorPhone: "",
 };
 
 export const getProfile = createAsyncThunk(
@@ -102,6 +100,28 @@ export const uploadImage = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  "profile/updateProfile",
+  async (updateData: { updateData: ProfielIntrface }, thunkAPI: any) => {
+    console.log(updateData);
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axios.put(`${api}update/`, updateData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res);
+
+      return res.data;
+    } catch (error: any) {
+      console.error(error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 // Create the slice
 const profileSlice = createSlice({
   name: "profile",
@@ -142,7 +162,8 @@ const profileSlice = createSlice({
       .addCase(createProfile.rejected, (state, action: any) => {
         state.isLoading = false;
         state.profile = null;
-        state.erros = action.payload.response.data.message;
+        console.log(action.payload);
+        state.errorPhone = action.payload.message;
       });
 
     // uploadImage
@@ -157,6 +178,23 @@ const profileSlice = createSlice({
         state.counter += 1;
       })
       .addCase(uploadImage.rejected, (state, action: any) => {
+        state.isLoading = false;
+        state.profile = null;
+        state.erros = action.payload.response.data.message;
+      });
+
+    // updateProfile
+    builder
+      .addCase(updateProfile.pending, (state) => {
+        state.erros = null;
+        state.profile = null;
+        state.isLoading = true;
+      })
+      .addCase(updateProfile.fulfilled, (state, action: any) => {
+        state.isLoading = false;
+        state.counter += 1;
+      })
+      .addCase(updateProfile.rejected, (state, action: any) => {
         state.isLoading = false;
         state.profile = null;
         state.erros = action.payload.response.data.message;

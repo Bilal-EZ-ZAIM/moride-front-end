@@ -6,7 +6,7 @@ import { Safety } from '../components/safety/Safety';
 import { PricingSection } from '../components/pricing/PricingSection';
 import { SpecialServices } from '../components/services/SpecialServices';
 import { Testimonials } from '../components/testimonials/Testimonials';
-import { DownloadApp } from '../components/app/DownloadApp';
+import DownloadApp from '../components/DownloadApp';
 
 export function Home() {
   return (

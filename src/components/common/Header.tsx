@@ -39,7 +39,6 @@ export function Header() {
     }
   }, [isLogin, dispatch, counter]);
 
-  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -58,7 +57,6 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
@@ -125,6 +123,12 @@ export function Header() {
           label: "Trajets disponibles",
           icon: Search,
           description: "Trouver des passagers",
+        },
+        {
+          path: "/drivers",
+          label: "Chauffeurs",
+          icon: Users,
+          description: "Trouver un chauffeur",
         },
         {
           path: "/myTrips",
@@ -209,6 +213,20 @@ export function Header() {
 
           {/* Profile Section */}
           <div className="flex items-center gap-4">
+            {/* Chat Icon - Only visible on desktop */}
+            {isLogin && (
+              <Link
+                to="/messages"
+                className="relative hidden lg:flex p-2 hover:bg-gray-50 rounded-lg transition-colors"
+                title="Messages"
+              >
+                <MessageSquare className="w-6 h-6 text-gray-600 hover:text-emerald-600" />
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs flex items-center justify-center rounded-full">
+                  3
+                </span>
+              </Link>
+            )}
+
             {isLogin && profile && (
               <div className="relative profile-menu">
                 <button
@@ -292,6 +310,26 @@ export function Header() {
         {isMenuOpen && (
           <div className="lg:hidden mobile-menu fixed inset-x-0 top-16 bg-white border-t border-gray-100 shadow-lg overflow-y-auto max-h-[calc(100vh-4rem)]">
             <div className="container mx-auto px-4 py-4 space-y-4">
+              {/* Messages Link for Mobile */}
+              {isLogin && (
+                <Link
+                  to="/messages"
+                  className="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <MessageSquare className="w-5 h-5 shrink-0 mr-3" />
+                  <div>
+                    <div className="font-medium">Messages</div>
+                    <div className="text-sm text-gray-500">
+                      Voir vos conversations
+                    </div>
+                  </div>
+                  <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                    3
+                  </span>
+                </Link>
+              )}
+
               {mainNavItems.map((item) => {
                 const Icon = item.icon;
                 return (

@@ -4,12 +4,9 @@ import { Home } from "./pages/Home";
 import { Register } from "./pages/Register";
 import { DriversListing } from "./pages/DriversListing";
 import { UserProfile } from "./pages/UserProfile";
-import { DriverDashboard } from "./pages/DriverDashboard";
 import { BookTrip } from "./pages/BookTrip";
 import { TripOffers } from "./pages/TripOffers";
 import { TripDetails } from "./pages/TripDetails";
-import { SuperAdminDashboard } from "./pages/SuperAdminDashboard";
-import { AdminUsers } from "./pages/AdminUsers";
 import { ChangePassword } from "./pages/ChangePassword";
 import { ResetPassword } from "./pages/ResetPassword";
 import { Payment } from "./pages/Payment";
@@ -42,18 +39,13 @@ export function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-
           <Route element={<ProtectedRoute />}>
-            <Route path="/payment" element={<Payment />} />
             <Route path="driver" element={<DriverProfile />} />
             <Route path="/MyTrips" element={<MyTrips />} />
             <Route path="/tripDetails/:id" element={<TripDetails />} />
             <Route path="bookings" element={<TripOffers />} />
-
-            <Route path="driver/dashboard" element={<DriverDashboard />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/change-password" element={<ChangePassword />} />
-
             <Route path="/create/profile" element={<CreateProfile />} />
             <Route path="/create/driver" element={<CreateDiriverProfile />} />
           </Route>
@@ -63,12 +55,9 @@ export function App() {
         </Route>
         <Route path="/welcome/page" element={<WelcomePage />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/messages" element={<Messages />} />
-          <Route path="/admin" element={<SuperAdminDashboard />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
         </Route>
-
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>

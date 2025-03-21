@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { ProfileCover } from "../components/driver/ProfileCover";
-import { ReviewsList } from "../components/driver/ReviewsList";
 import { ContactSection } from "../components/driver/ContactSection";
-import { PricingSettings } from "../components/profile/PricingSettings";
 import { ProfileStats } from "../components/driver/ProfileStats";
-import WorkSchedule from "../components/driver/WorkSchedule";
 import { useParams } from "react-router-dom";
 import { VehicleInfoDriver } from "../components/driver/VehicleInfoDriver";
 import WorkScheduleDetails from "../components/driver/WorkScheduleDetails";

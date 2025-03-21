@@ -87,20 +87,17 @@ export const login = createAsyncThunk(
   }
 );
 
-export const verifyOtp = createAsyncThunk(
-  "auth/verifyOtp",
-  async (data, thunkAPI: any) => {
-    const state = thunkAPI.getState().auth;
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (data: any, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
     try {
-      const res = await axios.post(
-        `http://localhost:8001/api/auth/verifyAcount/${state.token}`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await axios.post(`${api}verify/code`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       return res.data;
     } catch (error: any) {
@@ -236,6 +233,7 @@ export const loginByGoogle = createAsyncThunk(
     }
   }
 );
+
 // Create the slice
 const authSlice = createSlice({
   name: "auth",
@@ -295,25 +293,26 @@ const authSlice = createSlice({
         console.log(action.payload);
       });
 
-    // verifyOtp
+    // resetPassword
     builder
-      .addCase(verifyOtp.pending, (state) => {
+      .addCase(resetPassword.pending, (state) => {
         console.log("is pending");
         state.isLoading = true;
         console.log(state.token);
         state.status = false;
         state.error = null;
       })
-      .addCase(verifyOtp.fulfilled, (state, action) => {
+      .addCase(resetPassword.fulfilled, (state, action) => {
         console.log("is fulfilled");
         state.isLoading = false;
         state.user = action.payload;
         console.log("User logged in successfully:", action.payload);
         state.token = action.payload.token;
+        state.step = "Password";
         state.error = null;
         console.log(state.token);
       })
-      .addCase(verifyOtp.rejected, (state, action: any) => {
+      .addCase(resetPassword.rejected, (state, action: any) => {
         state.isLoading = false;
         state.error = action.payload.response.data.errors;
         state.status = false;
@@ -330,6 +329,7 @@ const authSlice = createSlice({
         state.user = action.payload;
         console.log("User Action", action);
         state.token = action.payload.token;
+        localStorage.setItem("token", action.payload.token);
         state.step = "code";
         state.error = null;
         state.status = true;

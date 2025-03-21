@@ -5,7 +5,6 @@ import { UserSocialLinks } from "../components/user/UserSocialLinks";
 import { UserStats } from "../components/user/UserStats";
 import { UserLocation } from "../components/user/UserLocation";
 import { UserTrips } from "../components/user/UserTrips";
-import { BecomeDriverModal } from "../components/user/BecomeDriverModal";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { getProfile } from "../store/features/profile/profileSlice";
 
@@ -64,10 +63,7 @@ export function UserProfile() {
           </div>
         </div>
 
-        <BecomeDriverModal
-          isOpen={isDriverModalOpen}
-          onClose={() => setIsDriverModalOpen(false)}
-        />
+        
       </div>
     )
   );

@@ -2,10 +2,10 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { Menu } from "lucide-react";
 import { ContactsList } from "../components/chat/ContactsList";
 import { ChatHeader } from "../components/chat/ChatHeader";
-import MessageBubble from "../components/chat/MessageBubble";
 import { ChatInput } from "../components/chat/ChatInput";
 import { io } from "socket.io-client";
 import { useAppSelector } from "../hooks";
+import { MessageBubble } from "../components/chat/MessageBubble";
 
 function Messages() {
   const { user } = useAppSelector((state) => state.auth);
@@ -14,14 +14,15 @@ function Messages() {
   const [roomName, setRoomName] = useState<string>("");
   const [messages, setMessages] = useState<any[]>([]);
   const [showContacts, setShowContacts] = useState(true);
-  const socketRef = useRef<any>(null); 
+  const socketRef = useRef<any>(null);
   const currentUserId = user?._id;
   const [receiver, setReceiver] = useState<any>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const formatMessage = useCallback(
     (msg: any, prevMsg?: any) => ({
       _id: msg._id,
-      image: `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80`,
+      image: msg.imageProfile,
       profile: msg.sender.username,
       typeMessage: msg.type,
       sender: msg.sender._id,
@@ -38,6 +39,15 @@ function Messages() {
     []
   );
 
+  // Function to leave current room
+  const leaveCurrentRoom = useCallback(() => {
+    const socket = socketRef.current;
+    if (socket && roomName) {
+      console.log(`Leaving room: ${roomName}`);
+      socket.emit("leave_room", { roomname: roomName });
+    }
+  }, [roomName]);
+
   useEffect(() => {
     const newSocket = io("http://localhost:3000", {
       extraHeaders: {
@@ -45,8 +55,8 @@ function Messages() {
       },
     });
 
-    socketRef.current = newSocket; 
-    newSocket.emit("getContacts", {});
+    socketRef.current = newSocket;
+    newSocket.emit("getContacts", currentUserId);
 
     newSocket.on("contactsList", (contacts) => {
       console.log("Contacts received:", contacts);
@@ -54,9 +64,12 @@ function Messages() {
     });
 
     return () => {
+      if (roomName) {
+        newSocket.emit("leave_room", { roomname: roomName });
+      }
       newSocket.disconnect();
     };
-  }, []);
+  }, [roomName]);
 
   useEffect(() => {
     const socket = socketRef.current;
@@ -67,18 +80,20 @@ function Messages() {
 
       socket.on("sendMessageRoom", (msgs: any) => {
         console.log("Received message list:", msgs);
-        const formattedMessages = msgs.map((msg: any, index: number) =>
-          formatMessage(msg, index > 0 ? msgs[index - 1] : null)
-        );
+        const formattedMessages = msgs.map((msg: any, index: number) => {
+          console.log(msg);
+          return formatMessage(msg, index > 0 ? msgs[index - 1] : null);
+        });
         setMessages(formattedMessages);
       });
 
       socket.on("receive_message", (newMsg: any) => {
-        console.log("Received new message:", newMsg);
         setMessages((prevMessages) => {
           const formattedNewMessage = formatMessage(
             newMsg.newMsg,
-            prevMessages[prevMessages.length - 1]
+            prevMessages.length > 0
+              ? prevMessages[prevMessages.length - 1]
+              : null
           );
           return [...prevMessages, formattedNewMessage];
         });
@@ -87,6 +102,10 @@ function Messages() {
 
     return () => {
       if (socket) {
+        if (roomName) {
+          socket.emit("leave_room", { roomname: roomName });
+          console.log(`Left room on cleanup: ${roomName}`);
+        }
         socket.off("sendMessageRoom");
         socket.off("receive_message");
       }
@@ -99,14 +118,30 @@ function Messages() {
 
       if (roomName) {
         socket.emit("leave_room", { roomname: roomName });
+        console.log(`Left room: ${roomName}`);
       }
-      setRoomName(contact.roomName);
+
+      const newRoomName = contact.roomName;
+      console.log(`Joining new room: ${newRoomName}`);
+
+      setRoomName(newRoomName);
       setSelectedContact(contact);
       setShowContacts(false);
       setReceiver(contact._id);
     },
     [roomName]
   );
+
+  // Function to scroll to the bottom of the message container
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = useCallback(
     (content: string) => {
@@ -118,17 +153,25 @@ function Messages() {
         type: "msg",
         content,
         receiver,
+        sender: currentUserId,
       };
 
       console.log("Sending new message:", newMessage);
       socket.emit("send_message", newMessage);
     },
-    [receiver]
+    [receiver, currentUserId]
   );
 
+  // Handle user logout - make sure to leave room
+  const handleLogout = useCallback(() => {
+    leaveCurrentRoom();
+    // Additional logout logic here
+    // e.g., clearing local storage, redirecting, etc.
+  }, [leaveCurrentRoom]);
+
+  console.log(messages);
   return (
     <div className="h-screen flex bg-gray-100">
-      <h1>{receiver}</h1>
       <div
         className={`fixed md:relative w-full md:w-80 h-full bg-white z-10 transition-transform duration-300 ${
           showContacts ? "translate-x-0" : "-translate-x-full md:translate-x-0"
@@ -162,6 +205,7 @@ function Messages() {
                   currentUserId={currentUserId}
                 />
               ))}
+              <div ref={messagesEndRef} />
             </div>
           </div>
           <div className="w-full">

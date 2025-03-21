@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ProfileCover } from "../components/driver/ProfileCover";
 import { ProfileStats } from "../components/driver/ProfileStats";
-import { ReviewsList } from "../components/driver/ReviewsList";
 import { WorkSchedule } from "../components/driver/WorkSchedule";
 import { PricingSettings } from "../components/driver/PricingSettings";
 import { EditProfileModal } from "../components/driver/EditProfileModal";
@@ -34,7 +33,6 @@ export function DriverProfile() {
       {profileDriver && (
         <>
           <ProfileCover
-            onEdit={() => setIsEditModalOpen(true)}
             imageUrl={profileDriver?.profile.imageBanner.url}
             profileUrl={profileDriver.profile.imageProfile.url}
             name={`${profileDriver.profile.firstname} ${profileDriver.profile.lastname}`}
@@ -50,10 +48,10 @@ export function DriverProfile() {
                   languages={profileDriver.preferredLanguages}
                   rating={profileDriver.rating}
                 />
+
                 <WorkSchedule />
                 <VehicleInfo isOwner={true} />
 
-                {/* <ReviewsList isDriver={true} /> */}
               </div>
 
               <div className="space-y-8">
@@ -64,7 +62,7 @@ export function DriverProfile() {
                   address={profileDriver.profile.address}
                   social={{
                     facebook: profileDriver.profile.facebook,
-                    linkedin: profileDriver.profile.linkedIn,
+                    linkedIn: profileDriver.profile.linkedIn,
                     whatsapp: profileDriver.profile.whatsapp,
                     portfolio: profileDriver.profile.portfolio,
                   }}

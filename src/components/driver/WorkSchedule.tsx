@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Save, Loader2 } from "lucide-react";
 import { Button } from "../common/Button";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -56,7 +56,7 @@ export function WorkSchedule() {
           });
         });
     } else {
-      console.log({ weekSchedule: schedule })
+      console.log({ weekSchedule: schedule });
       dispatch(updateWorkingHours({ weekSchedule: schedule }))
         .unwrap()
         .then(() => {

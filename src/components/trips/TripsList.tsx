@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   MapPin,
-  Calendar,
-  Clock,
   Users,
   ArrowRight,
   Star,
@@ -18,7 +16,7 @@ import { fetchBookings } from "../../store/features/booking/bookingSlice";
 export function TripsList() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { loading, bookings } = useAppSelector((state) => state.booking);
+  const { bookings } = useAppSelector((state) => state.booking);
   const { driverId } = useAppSelector((state) => state.driver);
   const dispatch = useAppDispatch();
   console.log(bookings);

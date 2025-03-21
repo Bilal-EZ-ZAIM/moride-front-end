@@ -31,6 +31,7 @@ import {
 } from "../store/features/booking/bookingSlice";
 import { Button } from "../components/common/Button";
 import Swal from "sweetalert2";
+import { ContactModal } from "../components/chat/ContactModal";
 
 // Badge component
 const Badge = ({ children, variant = "default", className = "" }) => {
@@ -55,13 +56,18 @@ function MyTrips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const tripsPerPage = 5;
+
+  const [selectedDriver, setSelectedDriver] = useState<{
+    name: string;
+    id: string;
+  } | null>(null);
 
   const { myBookings, counter } = useAppSelector((state) => state.booking);
   const dispatch = useAppDispatch();
@@ -948,9 +954,8 @@ function MyTrips() {
                         Actions
                       </div>
                     </div>
-
                     <div className="divide-y divide-gray-200">
-                      {selectedTrip.applicants.map((applicant) => (
+                      {selectedTrip?.applicants.map((applicant: any) => (
                         <div
                           key={applicant._id}
                           className="grid grid-cols-3 gap-4 p-4 items-center"
@@ -958,6 +963,7 @@ function MyTrips() {
                           <div className="text-sm font-medium">
                             {getDriverName(applicant)}
                           </div>
+
                           <div>
                             {applicant.status === "pending" ? (
                               <Badge variant="warning">En attente</Badge>
@@ -966,9 +972,10 @@ function MyTrips() {
                             ) : applicant.status === "rejected" ? (
                               <Badge variant="danger">Rejeté</Badge>
                             ) : (
-                              <Badge variant="secondary">Statut inconnu</Badge> // Optional: for any unexpected status
+                              <Badge variant="secondary">Statut inconnu</Badge>
                             )}
                           </div>
+
                           <div className="flex items-center gap-2">
                             {applicant.status === "pending" ? (
                               <>
@@ -993,18 +1000,38 @@ function MyTrips() {
                                 </Button>
                               </>
                             ) : (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="text-xs"
-                              >
-                                Contacter
-                              </Button>
+                              <>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-xs"
+                                  onClick={() => {
+                                    setSelectedDriver({
+                                      name: applicant.driverId.profile
+                                        .firstname,
+                                      id: applicant.driverId.userId,
+                                    });
+                                    setIsModalOpen(true);
+                                  }}
+                                >
+                                  Contacter
+                                </Button>
+                              </>
                             )}
                           </div>
                         </div>
                       ))}
+
+                      {selectedDriver && (
+                        <ContactModal
+                          isOpen={isModalOpen}
+                          onClose={() => setIsModalOpen(false)}
+                          driverName={selectedDriver.name}
+                          driverId={selectedDriver.id}
+                        />
+                      )}
                     </div>
+                    ;
                   </div>
                 )}
               </div>

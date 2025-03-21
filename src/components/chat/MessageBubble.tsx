@@ -1,6 +1,5 @@
 import React from "react";
 
-// Types for our props and message structure
 interface Message {
   _id: string;
   content: string;
@@ -8,6 +7,7 @@ interface Message {
   sender: string;
   profile: string;
   image: string;
+  timestamp: Date;
 }
 
 interface MessageBubbleProps {
@@ -16,42 +16,42 @@ interface MessageBubbleProps {
   currentUserId: string;
 }
 
-const MessageBubble = ({
+export const MessageBubble = ({
   message,
   showAvatar,
   currentUserId,
 }: MessageBubbleProps) => {
   const isOwn = message.sender === currentUserId;
-console.log(currentUserId)
+
   return (
     <div
       className={`flex ${
         isOwn ? "justify-end" : "justify-start"
-      } items-end space-x-2`}
+      } items-end space-x-2 group`}
     >
-      {!isOwn && showAvatar && (
+      {/* {!isOwn && showAvatar && (
         <img
-          src={message.image}
-          alt="User Avatar"
-          className="w-6 h-6 rounded-full"
+          src={message.profile}
+          alt="Profile"
+          className="w-8 h-8 rounded-full object-cover"
         />
-      )}
-      {!isOwn && !showAvatar && <div className="w-6" />}
+      )} */}
       <div
         className={`
-          max-w-[75%] sm:max-w-[65%] px-4 py-2 rounded-2xl
+          relative max-w-[75%] sm:max-w-[65%] px-4 py-2.5 rounded-2xl
+          transition-all duration-200
           ${
             isOwn
-              ? "bg-emerald-500 text-white rounded-br-none"
-              : "bg-white text-gray-800 rounded-bl-none shadow-sm"
+              ? "bg-indigo-500 text-white rounded-br-none hover:bg-indigo-600"
+              : "bg-white text-gray-800 rounded-bl-none shadow-md hover:shadow-lg"
           }
         `}
       >
-        <p className="break-words">{message.content}</p>
+        <p className="break-words leading-relaxed">{message.content}</p>
         <span
           className={`text-xs ${
-            isOwn ? "text-emerald-50" : "text-gray-500"
-          } mt-1 block`}
+            isOwn ? "text-indigo-100" : "text-gray-500"
+          } mt-1 block opacity-0 group-hover:opacity-100 transition-opacity duration-200`}
         >
           {new Date().toLocaleTimeString([], {
             hour: "2-digit",
@@ -59,8 +59,13 @@ console.log(currentUserId)
           })}
         </span>
       </div>
+      {/* {isOwn && showAvatar && (
+        <img
+          src={message.profile}
+          alt="Profile"
+          className="w-8 h-8 rounded-full object-cover"
+        />
+      )} */}
     </div>
   );
 };
-
-export default MessageBubble;

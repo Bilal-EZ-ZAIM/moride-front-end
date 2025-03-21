@@ -1,20 +1,29 @@
-import React, { useState } from 'react';
-import { Phone, Video, MoreVertical, X, Mic, MicOff, Camera, CameraOff } from 'lucide-react';
-
+import React, { useState } from "react";
+import {
+  Phone,
+  Video,
+  MoreVertical,
+  X,
+  Mic,
+  MicOff,
+  Camera,
+  CameraOff,
+} from "lucide-react";
 
 export function ChatHeader({ user }: any) {
   const [isInCall, setIsInCall] = useState(false);
   const [isVideoCall, setIsVideoCall] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
+  console.log(user);
 
   const handleVoiceCall = () => {
-    setIsInCall(prev => !prev);
+    setIsInCall((prev) => !prev);
     setIsVideoCall(false);
   };
 
   const handleVideoCall = () => {
-    setIsInCall(prev => !prev);
+    setIsInCall((prev) => !prev);
     setIsVideoCall(true);
   };
 
@@ -24,29 +33,39 @@ export function ChatHeader({ user }: any) {
         <div className="flex items-center space-x-3">
           <div className="relative">
             <img
-              src={user.avatar}
-              alt={user.name}
+              src={user.imageProfile}
+              alt={user.imageProfile}
               className="w-10 h-10 rounded-full object-cover"
             />
-            {user.status === 'online' && (
+            {user.isOnline === "online" && (
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
             )}
           </div>
           <div>
-            <h2 className="font-semibold text-gray-800">{user.name}</h2>
-            <p className="text-sm text-green-500">{user.status === 'online' ? 'En ligne' : 'Hors ligne'}</p>
+            <h2 className="font-semibold text-gray-800">{user.username}</h2>
+            <p className="text-sm text-green-500">
+              {user.isOnline === "online" ? "En ligne" : "Hors ligne"}
+            </p>
           </div>
         </div>
         <div className="flex items-center space-x-1 sm:space-x-2">
-          <button 
+          <button
             onClick={handleVoiceCall}
-            className={`p-2 rounded-full transition-colors ${isInCall && !isVideoCall ? 'bg-red-500 text-white' : 'hover:bg-gray-100 text-gray-600'}`}
+            className={`p-2 rounded-full transition-colors ${
+              isInCall && !isVideoCall
+                ? "bg-red-500 text-white"
+                : "hover:bg-gray-100 text-gray-600"
+            }`}
           >
             <Phone className="w-5 h-5" />
           </button>
-          <button 
+          <button
             onClick={handleVideoCall}
-            className={`p-2 rounded-full transition-colors ${isInCall && isVideoCall ? 'bg-red-500 text-white' : 'hover:bg-gray-100 text-gray-600'}`}
+            className={`p-2 rounded-full transition-colors ${
+              isInCall && isVideoCall
+                ? "bg-red-500 text-white"
+                : "hover:bg-gray-100 text-gray-600"
+            }`}
           >
             <Video className="w-5 h-5" />
           </button>
@@ -55,16 +74,16 @@ export function ChatHeader({ user }: any) {
           </button>
         </div>
       </div>
-      
+
       {isInCall && (
         <div className="flex items-center justify-between px-4 py-2 bg-gray-50 border-b">
           <span className="text-sm font-medium text-gray-700">
-            {isVideoCall ? 'Appel vidéo en cours' : 'Appel vocal en cours'}
+            {isVideoCall ? "Appel vidéo en cours" : "Appel vocal en cours"}
           </span>
           <div className="flex items-center space-x-2">
             {isVideoCall && (
               <button
-                onClick={() => setIsCameraOff(prev => !prev)}
+                onClick={() => setIsCameraOff((prev) => !prev)}
                 className="p-2 hover:bg-gray-200 rounded-full"
               >
                 {isCameraOff ? (
@@ -75,7 +94,7 @@ export function ChatHeader({ user }: any) {
               </button>
             )}
             <button
-              onClick={() => setIsMuted(prev => !prev)}
+              onClick={() => setIsMuted((prev) => !prev)}
               className="p-2 hover:bg-gray-200 rounded-full"
             >
               {isMuted ? (

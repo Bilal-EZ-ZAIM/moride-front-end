@@ -33,7 +33,7 @@ export function VehicleInfo({ isOwner }: any) {
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold">Véhicule</h2>
-          {isOwner && car?.model ? ( // Show the edit button only if isOwner is true
+          {isOwner && car?.model ? ( 
             <Button
               variant="outline"
               size="sm"
@@ -43,7 +43,7 @@ export function VehicleInfo({ isOwner }: any) {
               <Edit className="w-4 h-4" />
               Modifier
             </Button>
-          ) : !car?.model ? ( // Show the create button only if car does not exist
+          ) : !car?.model ? ( 
             <Button
               variant="primary"
               size="sm"

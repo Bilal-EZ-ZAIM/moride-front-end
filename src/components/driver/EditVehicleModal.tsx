@@ -40,12 +40,7 @@ interface CarData {
   image: any;
 }
 
-interface EditVehicleModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (carData: CarData, imageFile: File | null) => Promise<void>;
-  vehicleData?: any;
-}
+
 
 export function EditVehicleModal({ isOpen, onClose, vehicleData }: any) {
   const [selectedPrevewise, setSelectedPrevewise] = useState<ImageFile | null>(
@@ -129,15 +124,7 @@ export function EditVehicleModal({ isOpen, onClose, vehicleData }: any) {
     console.log(data);
     setIsLoading(true);
     try {
-      const carData: CarData = {
-        model: data.model,
-        year: data.year,
-        transmission: data.transmission,
-        license: data.license,
-        insurance: data.insurance,
-        lastMaintenance: data.lastMaintenance,
-        image: selectedImage,
-      };
+  
 
       const formData = new FormData();
       formData.append("model", data.model);
@@ -151,14 +138,12 @@ export function EditVehicleModal({ isOpen, onClose, vehicleData }: any) {
         formData.append("image", selectedImage);
       }
 
-      // استدعاء الدالة لتحديث البيانات
       await dispatch(updateCar({ id: vehicleData?._id, updateData: formData }));
 
       reset();
       setSelectedPrevewise(null);
       onClose();
 
-      // عرض رسالة تأكيد باستخدام SweetAlert
       Swal.fire({
         title: "Succès!",
         text: "Les informations du véhicule ont été mises à jour avec succès.",
@@ -298,32 +283,6 @@ export function EditVehicleModal({ isOpen, onClose, vehicleData }: any) {
                 )}
               </div>
             </div>
-
-            {/* Champ Type de véhicule */}
-            {/* <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">
-                Type de véhicule
-              </label>
-              <div className="relative">
-                <Settings className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Controller
-                  name="type"
-                  control={control}
-                  render={({ field }) => (
-                    <select
-                      {...field}
-                      className="w-full pl-10 pr-4 py-3 border rounded-lg appearance-none bg-white focus:ring-2 focus:ring-emerald-500 border-gray-300"
-                    >
-                      <option value="sedan">Berline</option>
-                      <option value="suv">SUV</option>
-                      <option value="van">Monospace</option>
-                      <option value="luxury">Véhicule de luxe</option>
-                    </select>
-                  )}
-                />
-              </div>
-            </div> */}
-
             {/* Champ Assurance */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
