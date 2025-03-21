@@ -6,8 +6,6 @@ import { RegisterIntrface } from "../../../interface/registerInterface";
 const apiUrl: string = import.meta.env.VITE_API_URL;
 const api: string = `${apiUrl}/auth/`;
 
-// const api: string = "http://localhost:3000/api/v1/auth/";
-
 interface AuthState {
   isLoading: boolean;
   user: any | null;
@@ -159,28 +157,6 @@ export const updatePassword = createAsyncThunk(
         message: error.message,
         response: error.response?.data,
       });
-    }
-  }
-);
-
-export const Deconxion = createAsyncThunk(
-  "auth/Deconxion",
-  async (_, thunkAPI) => {
-    const token = localStorage.getItem("token");
-
-    try {
-      const res = await axios.get(`http://localhost:8001/api/auth/logout`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return res.data;
-    } catch (error: any) {
-      console.error(error.response?.data || error.message);
-
-      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -364,32 +340,6 @@ const authSlice = createSlice({
         state.isLoading = false;
         console.log(action.payload);
         state.msgErrUpPwd = action.payload.response.message;
-      });
-
-    // log out
-    builder
-      .addCase(Deconxion.pending, (state) => {
-        state.isLoading = true;
-        state.status = false;
-        state.isLogin = false;
-        state.error = null;
-      })
-      .addCase(Deconxion.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.token = action.payload.token;
-        state.error = null;
-        state.status = false;
-        state.isLogin = false;
-        state.error = null;
-      })
-      .addCase(Deconxion.rejected, (state, action: any) => {
-        state.status = false;
-        state.isLogin = false;
-
-        state.isLoading = false;
-        console.log(action.payload.response.data.message);
-
-        state.error = action.payload.response.data.message;
       });
 
     builder

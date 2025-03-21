@@ -214,18 +214,15 @@ export function Header() {
           {/* Profile Section */}
           <div className="flex items-center gap-4">
             {/* Chat Icon - Only visible on desktop */}
-            {isLogin && (
+            {/* {isLogin && (
               <Link
                 to="/messages"
                 className="relative hidden lg:flex p-2 hover:bg-gray-50 rounded-lg transition-colors"
                 title="Messages"
               >
                 <MessageSquare className="w-6 h-6 text-gray-600 hover:text-emerald-600" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs flex items-center justify-center rounded-full">
-                  3
-                </span>
               </Link>
-            )}
+            )} */}
 
             {isLogin && profile && (
               <div className="relative profile-menu">
