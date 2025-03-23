@@ -34,7 +34,7 @@ import Swal from "sweetalert2";
 import { ContactModal } from "../components/chat/ContactModal";
 
 // Badge component
-const Badge = ({ children, variant = "default", className = "" }) => {
+const Badge = ({ children, variant = "default", className = "" }: any) => {
   const variantStyles = {
     default: "bg-gray-100 text-gray-800",
     success: "bg-emerald-100 text-emerald-800",
@@ -59,7 +59,7 @@ function MyTrips() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
-  const [selectedTrip, setSelectedTrip] = useState(null);
+  const [selectedTrip, setSelectedTrip] = useState<any>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const tripsPerPage = 5;
@@ -73,7 +73,6 @@ function MyTrips() {
   const dispatch = useAppDispatch();
   const [trips, setTrips] = useState(myBookings);
 
-  console.log(counter);
   useEffect(() => {
     const getData = async () => {
       await dispatch(fetchMyBookings());
@@ -88,9 +87,8 @@ function MyTrips() {
     }
   }, [myBookings]);
 
-  console.log(myBookings);
 
-  const filteredTrips = trips.filter((trip) => {
+  const filteredTrips = trips.filter((trip: any) => {
     const matchesSearch =
       trip.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
       trip.to.toLowerCase().includes(searchTerm.toLowerCase());
@@ -373,7 +371,7 @@ function MyTrips() {
                   Trajets actifs
                 </p>
                 <h3 className="text-2xl font-bold text-emerald-900 mt-1">
-                  {trips.filter((t) => t.status === "active").length}
+                  {trips.filter((t:any) => t.status === "active").length}
                 </h3>
               </div>
               <div className="bg-emerald-200 p-3 rounded-full">
@@ -389,7 +387,7 @@ function MyTrips() {
                   Demandes reçues
                 </p>
                 <h3 className="text-2xl font-bold text-blue-900 mt-1">
-                  {trips.reduce((acc, trip) => acc + trip.applicants.length, 0)}
+                  {trips.reduce((acc:any, trip:any) => acc + trip.applicants.length, 0)}
                 </h3>
               </div>
               <div className="bg-blue-200 p-3 rounded-full">
@@ -406,7 +404,7 @@ function MyTrips() {
                 </p>
                 <h3 className="text-2xl font-bold text-purple-900 mt-1">
                   {trips.reduce(
-                    (acc, trip) =>
+                    (acc:any, trip:any) =>
                       acc + Number(trip.priceFrom) * trip.passengers,
                     0
                   )}{" "}
@@ -619,7 +617,7 @@ function MyTrips() {
                           </div>
                         ) : (
                           <div className="space-y-2">
-                            {trip.applicants.slice(0, 2).map((applicant) => (
+                            {trip.applicants.slice(0, 2).map((applicant:any) => (
                               <div
                                 key={applicant._id}
                                 className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100"

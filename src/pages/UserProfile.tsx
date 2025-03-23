@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { UserCover } from "../components/user/UserCover";
 import { UserInfo } from "../components/user/UserInfo";
 import { UserSocialLinks } from "../components/user/UserSocialLinks";
-import { UserStats } from "../components/user/UserStats";
 import { UserLocation } from "../components/user/UserLocation";
 import { UserTrips } from "../components/user/UserTrips";
 import { useAppDispatch, useAppSelector } from "../hooks";

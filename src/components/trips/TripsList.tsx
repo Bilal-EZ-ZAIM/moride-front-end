@@ -18,8 +18,8 @@ export function TripsList() {
 
   const { bookings } = useAppSelector((state) => state.booking);
   const { driverId } = useAppSelector((state) => state.driver);
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  console.log(bookings);
 
   const getBooking = async () => {
     await dispatch(fetchBookings());
@@ -155,20 +155,22 @@ export function TripsList() {
                         {trip.priceFrom}-{trip.priceTo} MAD
                       </div>
                     </div>
-                    <Link to={`/tripDetails/${trip._id}`}>
-                      {trip.applicants?.some(
-                        (applicant: any) => applicant.driverId === driverId
-                      ) ? (
-                        <Button className="flex items-center gap-2 px-8 py-3 text-base bg-gray-400 cursor-not-allowed">
-                          Déjà postulé
-                        </Button>
-                      ) : (
-                        <Button className="flex items-center gap-2 px-8 py-3 text-base group-hover:bg-emerald-700 transition-colors duration-300">
-                          Postuler
-                          <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
-                        </Button>
-                      )}
-                    </Link>
+                    {user?.role === "driver" && (
+                      <Link to={`/tripDetails/${trip._id}`}>
+                        {trip.applicants?.some(
+                          (applicant: any) => applicant.driverId === driverId
+                        ) ? (
+                          <Button className="flex items-center gap-2 px-8 py-3 text-base bg-gray-400 cursor-not-allowed">
+                            Déjà postulé
+                          </Button>
+                        ) : (
+                          <Button className="flex items-center gap-2 px-8 py-3 text-base group-hover:bg-emerald-700 transition-colors duration-300">
+                            Postuler
+                            <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+                          </Button>
+                        )}
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>

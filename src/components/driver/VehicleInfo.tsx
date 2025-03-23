@@ -61,8 +61,7 @@ export function VehicleInfo({ isOwner }: any) {
             <div className="relative">
               <img
                 src={
-                  car.image?.url ||
-                  "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&q=80"
+                  car.image?.url
                 }
                 alt="Vehicle"
                 className="w-full h-48 object-cover rounded-lg"

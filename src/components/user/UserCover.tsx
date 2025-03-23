@@ -12,7 +12,6 @@ interface UserCoverProps {
 }
 
 export function UserCover({ data }: any) {
-  const api: string = "http://localhost:3000/api/v1/profile/";
   const [bannerImage, setBannerImage] = useState<string | null>(
     data?.imageBanner?.url || null
   );

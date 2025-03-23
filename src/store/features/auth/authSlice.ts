@@ -279,12 +279,10 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
-        console.log("is fulfilled");
         state.isLoading = false;
         state.user = action.payload;
-        console.log("User logged in successfully:", action.payload);
         state.token = action.payload.token;
-        state.step = "Password";
+        // state.step = "Password";
         state.error = null;
         console.log(state.token);
       })

@@ -218,7 +218,7 @@ export function EditProfileModal({ isOpen, onClose, driverData }: EditProfileMod
                       onChange={(e) => {
                         const languages = e.target.checked
                           ? [...formData.preferredLanguages, lang]
-                          : formData.preferredLanguages.filter((l) => l !== lang);
+                          : formData.preferredLanguages.filter((l:any) => l !== lang);
                         setFormData({ ...formData, preferredLanguages: languages });
                       }}
                       className="rounded text-emerald-600"

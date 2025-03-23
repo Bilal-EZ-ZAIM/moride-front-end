@@ -34,7 +34,7 @@ export function DriversList() {
     let results = [...drivers];
 
     if (searchTerm) {
-      results = results.filter((driver) =>
+      results = results.filter((driver:any) =>
         driver?.profile.firstname
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase())
@@ -43,7 +43,7 @@ export function DriversList() {
 
     // Filter by experience
     if (experienceFilter) {
-      results = results.filter((driver) => {
+      results = results.filter((driver:any) => {
         const experience = driver.drivingExperience;
         if (experienceFilter === "0-1") {
           return experience >= 0 && experience <= 1;
@@ -139,9 +139,8 @@ export function DriversList() {
 
         {/* Results count */}
         <div className="text-sm text-gray-500">
-          {filteredDrivers.length} conducteur
-          {filteredDrivers.length !== 1 ? "s" : ""} trouvé
-          {filteredDrivers.length !== 1 ? "s" : ""}
+          {filteredDrivers.length} conducteur trouvé
+          
         </div>
       </div>
 

@@ -31,9 +31,7 @@ export function CreateProfile() {
     const filteredData: any = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => value !== "")
     );
-
-    console.log(filteredData);
-
+    
     Swal.fire({
       title: "Loading...",
       text: "Creating your profile, please wait...",
@@ -43,7 +41,7 @@ export function CreateProfile() {
       },
     });
 
-    const res = await dispatch(createProfile(filteredData));
+    const res:any = await dispatch(createProfile(filteredData));
 
 
     if (res.type === "profile/createProfile/fulfilled") {

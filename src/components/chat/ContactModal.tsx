@@ -53,11 +53,7 @@ export function ContactModal({
 
     socketRef.current.emit("send_message", messageData);
 
-    console.log("Message sent:", {
-      message,
-      receiver: driverId,
-      sender: user._id,
-    });
+    
 
     setMessage("");
     onClose();

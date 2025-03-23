@@ -9,7 +9,6 @@ import { TripOffers } from "./pages/TripOffers";
 import { TripDetails } from "./pages/TripDetails";
 import { ChangePassword } from "./pages/ChangePassword";
 import { ResetPassword } from "./pages/ResetPassword";
-import { Payment } from "./pages/Payment";
 import Login from "./pages/Login";
 import WelcomePage from "./pages/WelcomePage";
 import { CreateProfile } from "./pages/CreateProfile";

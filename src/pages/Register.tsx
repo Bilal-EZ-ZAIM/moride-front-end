@@ -3,7 +3,7 @@ import { AuthLayout } from "../components/auth/AuthLayout";
 import { SocialAuth } from "../components/auth/SocialAuth";
 import { Button } from "../components/common/Button";
 import { useForm } from "react-hook-form";
-import { registers, isLogins } from "../store/features/auth/authSlice";
+import { registers } from "../store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { RegisterIntrface } from "../interface/registerInterface";
 import { Link, useNavigate } from "react-router-dom";
@@ -187,8 +187,6 @@ export function Register() {
             </p>
           )}
         </div>
-
-    
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Chargement..." : "Créer un compte"}
